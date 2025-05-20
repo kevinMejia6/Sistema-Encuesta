@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -44,6 +45,7 @@
     }
   </script>
 </head>
+
 <body class="bg-slate-50 text-gray-800 min-h-screen">
   <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     <!-- Header -->
@@ -65,38 +67,22 @@
             <label for="nombre" class="block text-sm font-medium text-gray-700">
               Nombre del ejecutivo *
             </label>
-            <input 
-              type="text" 
-              id="nombre" 
-              name="nombre" 
-              placeholder="Nombre completo" 
-              required 
-              autocomplete="off"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            />
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required autocomplete="off"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
           <div class="space-y-2">
             <label for="fecha" class="block text-sm font-medium text-gray-700">
               Fecha *
             </label>
-            <input 
-              type="date" 
-              id="fecha" 
-              name="fecha" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
-            />
+            <input type="date" id="fecha" name="fecha" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
           <div class="space-y-2">
             <label for="sucursal" class="block text-sm font-medium text-gray-700">
               Sucursal *
             </label>
-            <select 
-              id="sucursal" 
-              name="sucursal" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="sucursal" name="sucursal" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona una sucursal --</option>
               <option value="Soyapango">Soyapango</option>
               <option value="Santa Ana">Santa Ana</option>
@@ -108,12 +94,8 @@
             <label for="canal" class="block text-sm font-medium text-gray-700">
               Canal *
             </label>
-            <select 
-              id="canal" 
-              name="canal" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="canal" name="canal" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona un canal --</option>
               <option value="PANELES">PANELES</option>
               <option value="PROMOTORIA">PROMOTORIA</option>
@@ -122,16 +104,25 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+
+          <div class="space-y-2">
+            <label for="presenciaEjecutivo" class="block text-sm font-medium text-gray-700">
+              ¿Se encontró al ejecutivo en PDA o en ruta? *
+            </label>
+            <select id="presenciaEjecutivo" name="presenciaEjecutivo" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
           <div class="space-y-2">
             <label for="manejoOferta" class="block text-sm font-medium text-gray-700">
               Manejo de oferta comercial *
             </label>
-            <select 
-              id="manejoOferta" 
-              name="manejoOferta" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="manejoOferta" name="manejoOferta" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona una opción --</option>
               <option value="Excelente">Excelente</option>
               <option value="Bueno">Bueno</option>
@@ -140,31 +131,27 @@
               <option value="No respondió">No respondió</option>
             </select>
           </div>
-          <div class="space-y-2">
-            <label for="presenciaEjecutivo" class="block text-sm font-medium text-gray-700">
-              ¿Se encontró al ejecutivo en PDA o en ruta? *
+
+
+          <div id="supervisorConocedorDiv" class="space-y-2 hidden ">
+            <label for="supervisorConocedor" class="block text-sm font-medium text-gray-700">
+              ¿El supervisor es conocedor de la ausencia? *
             </label>
-            <select 
-              id="presenciaEjecutivo" 
-              name="presenciaEjecutivo" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="supervisorConocedor" name="supervisorConocedor" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona una opción --</option>
               <option value="Sí">Sí</option>
               <option value="No">No</option>
             </select>
           </div>
+
+
           <div class="space-y-2">
             <label for="ofreciendoMarca" class="block text-sm font-medium text-gray-700">
               ¿El vendedor estaba ofreciendo la marca? *
             </label>
-            <select 
-              id="ofreciendoMarca" 
-              name="ofreciendoMarca" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="ofreciendoMarca" name="ofreciendoMarca" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona una opción --</option>
               <option value="Sí">Sí</option>
               <option value="No">No</option>
@@ -176,20 +163,13 @@
           <label for="observaciones" class="block text-sm font-medium text-gray-700">
             Observaciones
           </label>
-          <textarea 
-            id="observaciones" 
-            name="observaciones" 
-            placeholder="Escribe tus observaciones aquí..."
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm h-24"
-          ></textarea>
+          <textarea id="observaciones" name="observaciones" placeholder="Escribe tus observaciones aquí..."
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm h-24"></textarea>
         </div>
 
         <div class="mt-8">
-          <button 
-            type="submit" 
-            aria-label="Enviar Evaluación"
-            class="w-full bg-primary-600 px-4 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out"
-          >
+          <button type="submit" aria-label="Enviar Evaluación"
+            class="w-full bg-primary-600 px-4 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out">
             Enviar Evaluación
           </button>
         </div>
@@ -207,30 +187,22 @@
             <label for="filterFechaDesde" class="block text-sm font-medium text-gray-700">
               Fecha desde:
             </label>
-            <input 
-              type="date" 
-              id="filterFechaDesde"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
-            />
+            <input type="date" id="filterFechaDesde"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
           <div class="space-y-2">
             <label for="filterFechaHasta" class="block text-sm font-medium text-gray-700">
               Fecha hasta:
             </label>
-            <input 
-              type="date" 
-              id="filterFechaHasta"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
-            />
+            <input type="date" id="filterFechaHasta"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
           <div class="space-y-2">
             <label for="filterSucursal" class="block text-sm font-medium text-gray-700">
               Sucursal:
             </label>
-            <select 
-              id="filterSucursal"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="filterSucursal"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="all">Todos</option>
               <option value="Soyapango">Soyapango</option>
               <option value="Santa Ana">Santa Ana</option>
@@ -242,10 +214,8 @@
             <label for="filterCanal" class="block text-sm font-medium text-gray-700">
               Canal:
             </label>
-            <select 
-              id="filterCanal"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="filterCanal"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="all">Todos</option>
               <option value="PANELES">PANELES</option>
               <option value="PROMOTORIA">PROMOTORIA</option>
@@ -255,30 +225,17 @@
             <label for="filterNombre" class="block text-sm font-medium text-gray-700">
               Nombre del ejecutivo:
             </label>
-            <input 
-              type="text" 
-              id="filterNombre" 
-              placeholder="Filtrar por nombre" 
-              autocomplete="off"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
-            />
+            <input type="text" id="filterNombre" placeholder="Filtrar por nombre" autocomplete="off"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
         </div>
         <div class="flex flex-wrap gap-4 mt-6">
-          <button 
-            id="btnFiltrar" 
-            aria-label="Aplicar filtros" 
-            type="button"
-            class="flex-1 sm:flex-none bg-primary-600 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out"
-          >
+          <button id="btnFiltrar" aria-label="Aplicar filtros" type="button"
+            class="flex-1 sm:flex-none bg-primary-600 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out">
             Aplicar filtros
           </button>
-          <button 
-            id="btnLimpiar" 
-            aria-label="Limpiar filtros" 
-            type="button"
-            class="flex-1 sm:flex-none bg-gray-500 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out"
-          >
+          <button id="btnLimpiar" aria-label="Limpiar filtros" type="button"
+            class="flex-1 sm:flex-none bg-gray-500 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
             Limpiar filtros
           </button>
         </div>
@@ -291,7 +248,8 @@
         <h2 class="text-xl font-semibold text-gray-800">Registros de Evaluaciones</h2>
       </div>
       <div class="overflow-x-auto">
-        <table aria-label="Tabla con registros de evaluaciones" id="tablaEvaluaciones" role="grid" class="min-w-full divide-y divide-gray-200">
+        <table aria-label="Tabla con registros de evaluaciones" id="tablaEvaluaciones" role="grid"
+          class="min-w-full divide-y divide-gray-200">
           <thead class="bg-primary-600 text-white">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nombre</th>
@@ -301,6 +259,7 @@
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Manejo Oferta</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Presencia Ejecutivo</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ofreciendo Marca</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Supervisor Conocedor</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Observaciones</th>
             </tr>
           </thead>
@@ -356,6 +315,40 @@
 
     // Manejo del formulario
     const form = document.getElementById('evaluationForm');
+    const presenciaEjecutivoSelect = document.getElementById('presenciaEjecutivo');
+    const manejoOfertaDiv = document.querySelector('#manejoOferta').parentElement;
+    const ofreciendoMarcaDiv = document.querySelector('#ofreciendoMarca').parentElement;
+    const supervisorConocedorDiv = document.getElementById('supervisorConocedorDiv');
+
+
+
+    // Agregar el nuevo input al formulario
+
+    presenciaEjecutivoSelect.addEventListener('change', function () {
+      if (this.value === 'No') {
+        manejoOfertaDiv.style.display = 'none';
+        ofreciendoMarcaDiv.style.display = 'none';
+        supervisorConocedorDiv.classList.remove('hidden');
+
+        // Quitar el atributo required
+        document.getElementById('manejoOferta').removeAttribute('required');
+        document.getElementById('ofreciendoMarca').removeAttribute('required');
+
+      } else {
+        manejoOfertaDiv.style.display = 'block';
+        ofreciendoMarcaDiv.style.display = 'block';
+
+        // Agregar nuevamente el atributo required si es necesario
+        document.getElementById('manejoOferta').setAttribute('required', 'required');
+        document.getElementById('ofreciendoMarca').setAttribute('required', 'required');
+
+        supervisorConocedorDiv.classList.add('hidden');
+                document.getElementById('supervisorConocedor').removeAttribute('required');
+
+      }
+    });
+
+
     form.addEventListener('submit', e => {
       e.preventDefault();
 
@@ -367,12 +360,16 @@
         manejoOferta: form.manejoOferta.value,
         presenciaEjecutivo: form.presenciaEjecutivo.value,
         ofreciendoMarca: form.ofreciendoMarca.value,
+        supervisorConocedor: form.supervisorConocedor.value,
         observaciones: form.observaciones.value.trim(),
         createdAt: new Date().toISOString()
       };
-
-      saveEvaluacionStorage(data);
-      alert('Evaluación guardada exitosamente!');
+      try {
+        saveEvaluacionStorage(data);
+        showToast('Evaluación guardada exitosamente!', 'success');
+      } catch (error) {
+        showToast('Error al guardar la evaluación. Inténtalo de nuevo.', 'error');
+      }
       form.reset();
       cargarYMostrarDatos();
     });
@@ -407,7 +404,7 @@
       mostrarTabla(docs);
     }
 
-    // Mostrar gráfica con Chart.js - Mejoradas y más atractivas
+    // Mostrar gráfica con Chart.js
     function mostrarGraficas(docs) {
       const manejoOptions = ['Excelente', 'Bueno', 'Regular', 'Malo', 'No respondió'];
       const manejoCounts = manejoOptions.map(opt => docs.filter(d => d.manejoOferta === opt).length);
@@ -415,9 +412,9 @@
       const presenciaOptions = ['Sí', 'No'];
       const presenciaCounts = presenciaOptions.map(opt => docs.filter(d => d.presenciaEjecutivo === opt).length);
 
-      // Gráfico Manejo Oferta Comercial (Tipo Doughnut con colores vibrantes y sombra)
+      // Gráfico Manejo Oferta Comercial
       const ctxManejo = document.getElementById('chartManejoOferta').getContext('2d');
-      if(chartManejoOferta) chartManejoOferta.destroy();
+      if (chartManejoOferta) chartManejoOferta.destroy();
       chartManejoOferta = new Chart(ctxManejo, {
         type: 'doughnut',
         data: {
@@ -445,7 +442,7 @@
             legend: {
               position: 'right',
               labels: {
-                font: {size: 14, weight: '600'},
+                font: { size: 14, weight: '600' },
                 color: '#334155'
               }
             },
@@ -463,9 +460,9 @@
         }
       });
 
-      // Gráfico Presencia Ejecutivo (Horizontal Bar con colores vivos)
+      // Gráfico Presencia Ejecutivo
       const ctxPresencia = document.getElementById('chartPresenciaEjecutivo').getContext('2d');
-      if(chartPresenciaEjecutivo) chartPresenciaEjecutivo.destroy();
+      if (chartPresenciaEjecutivo) chartPresenciaEjecutivo.destroy();
       chartPresenciaEjecutivo = new Chart(ctxPresencia, {
         type: 'bar',
         data: {
@@ -493,11 +490,11 @@
           scales: {
             x: {
               beginAtZero: true,
-              ticks: { stepSize: 1, font: {size: 13, weight: '600'} },
+              ticks: { stepSize: 1, font: { size: 13, weight: '600' } },
               grid: { display: false }
             },
             y: {
-              ticks: { font: {size: 14, weight: '700'} },
+              ticks: { font: { size: 14, weight: '700' } },
               grid: { display: false }
             }
           },
@@ -524,10 +521,10 @@
     function mostrarTabla(docs) {
       const tbody = document.querySelector('#tablaEvaluaciones tbody');
       tbody.innerHTML = '';
-      if(docs.length === 0){
+      if (docs.length === 0) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 8;
+        td.colSpan = 9; // Ajustado para incluir la columna de supervisorConocedor
         td.classList.add('px-6', 'py-4', 'text-center', 'text-sm', 'text-gray-500');
         td.textContent = 'No hay registros que mostrar.';
         tr.appendChild(td);
@@ -538,23 +535,24 @@
         const tr = document.createElement('tr');
         tr.classList.add('hover:bg-gray-50');
         tr.innerHTML = `
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.nombre)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca)}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
-        `;
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.nombre)}</td>
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta)}</td>
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca)}</td>
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.supervisorConocedor)}</td> <!-- Asegúrate de incluir esto -->
+         <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
+       `;
         tbody.appendChild(tr);
       });
     }
 
     // Escape HTML para evitar XSS en la tabla
     function escapeHtml(text) {
-      if(!text) return '';
-      return text.replace(/[&<>"']/g, function(m) {
+      if (!text) return '';
+      return text.replace(/[&<>"']/g, function (m) {
         return ({
           '&': '&amp;',
           '<': '&lt;',
@@ -587,6 +585,27 @@
       document.getElementById('fecha').value = today;
       cargarYMostrarDatos();
     };
+
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `p-4 mb-4 text-sm text-white rounded-lg shadow-md ${type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        }`;
+      toast.innerText = message;
+
+      // Agregar el toast al contenedor
+      document.getElementById('toastContainer').appendChild(toast);
+
+      // Eliminar el toast después de 3 segundos
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
   </script>
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-0 right-0 p-6 space-y-4 z-50"></div>
+
+
 </body>
+
 </html>
