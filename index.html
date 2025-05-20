@@ -101,6 +101,8 @@
               <option value="PROMOTORIA">PROMOTORIA</option>
             </select>
           </div>
+
+
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
@@ -165,6 +167,18 @@
           </label>
           <textarea id="observaciones" name="observaciones" placeholder="Escribe tus observaciones aquí..."
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm h-24"></textarea>
+        </div>
+
+        <div class="space-y-2">
+          <label for="auditor" class="block text-sm font-medium text-gray-700">
+            Nombre del Auditor *
+          </label>
+          <select id="auditor" name="auditor" required
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
+            <option value="">-- Selecciona un Auditor --</option>
+            <option value="Carlos Hernandez">Carlos Hernandez</option>
+            <option value="Flor Gaitan">Flor Gaitan</option>
+          </select>
         </div>
 
         <div class="mt-8">
@@ -261,6 +275,8 @@
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ofreciendo Marca</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Supervisor Conocedor</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Observaciones</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Auditor</th>
+
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -343,7 +359,7 @@
         document.getElementById('ofreciendoMarca').setAttribute('required', 'required');
 
         supervisorConocedorDiv.classList.add('hidden');
-                document.getElementById('supervisorConocedor').removeAttribute('required');
+        document.getElementById('supervisorConocedor').removeAttribute('required');
 
       }
     });
@@ -361,6 +377,7 @@
         presenciaEjecutivo: form.presenciaEjecutivo.value,
         ofreciendoMarca: form.ofreciendoMarca.value,
         supervisorConocedor: form.supervisorConocedor.value,
+        auditor: form.auditor.value,
         observaciones: form.observaciones.value.trim(),
         createdAt: new Date().toISOString()
       };
@@ -544,6 +561,8 @@
          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca)}</td>
          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.supervisorConocedor)}</td> <!-- Asegúrate de incluir esto -->
          <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.auditor)}</td> <!-- Asegúrate de incluir esto -->
+
        `;
         tbody.appendChild(tr);
       });
