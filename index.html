@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Evaluación de Ejecutivos de Ventas</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+            secondary: {
+              50: '#f8fafc',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+          },
+          boxShadow: {
+            card: '0 0 25px 0 rgba(0, 0, 0, 0.05)',
+            input: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-gray-800 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold text-center text-primary-700 sm:text-4xl">
+        Evaluación de Ejecutivos de Ventas
+      </h1>
+      <div class="w-24 h-1 bg-primary-500 mx-auto mt-4"></div>
+    </header>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl shadow-card mb-10">
+      <div class="px-6 py-5 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800">Registrar Nueva Evaluación</h2>
+      </div>
+      <form id="evaluationForm" aria-label="Formulario de Evaluación" class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="space-y-2">
+            <label for="nombre" class="block text-sm font-medium text-gray-700">
+              Nombre del ejecutivo *
+            </label>
+            <input 
+              type="text" 
+              id="nombre" 
+              name="nombre" 
+              placeholder="Nombre completo" 
+              required 
+              autocomplete="off"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="fecha" class="block text-sm font-medium text-gray-700">
+              Fecha *
+            </label>
+            <input 
+              type="date" 
+              id="fecha" 
+              name="fecha" 
+              required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="sucursal" class="block text-sm font-medium text-gray-700">
+              Sucursal *
+            </label>
+            <select 
+              id="sucursal" 
+              name="sucursal" 
+              required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
+            >
+              <option value="">-- Selecciona una sucursal --</option>
+              <option value="Soyapango">Soyapango</option>
+              <option value="Santa Ana">Santa Ana</option>
+              <option value="Sonsonate">Sonsonate</option>
+              <option value="Ahuchapan">Ahuchapan</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label for="canal" class="block text-sm font-medium text-gray-700">
+              Canal *
+            </label>
+            <select 
+              id="canal" 
+              name="canal" 
+              required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
+            >
+              <option value="">-- Selecciona un canal --</option>
+              <option value="PANELES">PANELES</option>
+              <option value="PROMOTORIA">PROMOTORIA</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <div class="space-y-2">
+            <label for="manejoOferta" class="block text-sm font-medium text-gray-700">
+              Manejo de oferta comercial *
+            </label>
+            <select 
+              id="manejoOferta" 
+              name="manejoOferta" 
+              required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
+            >
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Excelente">Excelente</option>
+              <option value="Bueno">Bueno</option>
+              <option value="Regular">Regular</option>
+              <option value="Malo">Malo</option>
+              <option value="No respondió">No respondió</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label for="presenciaEjecutivo" class="block text-sm font-medium text-gray-700">
+              ¿Se encontró al ejecutivo en PDA o en ruta? *
+            </label>
+            <select 
+              id="presenciaEjecutivo" 
+              name="presenciaEjecutivo" 
+              required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
+            >
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label for="ofreciendoMarca" class="block text-sm font-medium text-gray-700">
+              ¿El vendedor estaba ofreciendo la marca? *
+            </label>
+            <select 
+              id="ofreciendoMarca" 
+              name="ofreciendoMarca" 
+              required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
+            >
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <label for="observaciones" class="block text-sm font-medium text-gray-700">
+            Observaciones
+          </label>
+          <textarea 
+            id="observaciones" 
+            name="observaciones" 
+            placeholder="Escribe tus observaciones aquí..."
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm h-24"
+          ></textarea>
+        </div>
+
+        <div class="mt-8">
+          <button 
+            type="submit" 
+            aria-label="Enviar Evaluación"
+            class="w-full bg-primary-600 px-4 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out"
+          >
+            Enviar Evaluación
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl shadow-card mb-10">
+      <div class="px-6 py-5 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800">Filtros</h2>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div class="space-y-2">
+            <label for="filterFechaDesde" class="block text-sm font-medium text-gray-700">
+              Fecha desde:
+            </label>
+            <input 
+              type="date" 
+              id="filterFechaDesde"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="filterFechaHasta" class="block text-sm font-medium text-gray-700">
+              Fecha hasta:
+            </label>
+            <input 
+              type="date" 
+              id="filterFechaHasta"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="filterSucursal" class="block text-sm font-medium text-gray-700">
+              Sucursal:
+            </label>
+            <select 
+              id="filterSucursal"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
+            >
+              <option value="all">Todos</option>
+              <option value="Soyapango">Soyapango</option>
+              <option value="Santa Ana">Santa Ana</option>
+              <option value="Sonsonate">Sonsonate</option>
+              <option value="Ahuchapan">Ahuchapan</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label for="filterCanal" class="block text-sm font-medium text-gray-700">
+              Canal:
+            </label>
+            <select 
+              id="filterCanal"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
+            >
+              <option value="all">Todos</option>
+              <option value="PANELES">PANELES</option>
+              <option value="PROMOTORIA">PROMOTORIA</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label for="filterNombre" class="block text-sm font-medium text-gray-700">
+              Nombre del ejecutivo:
+            </label>
+            <input 
+              type="text" 
+              id="filterNombre" 
+              placeholder="Filtrar por nombre" 
+              autocomplete="off"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
+            />
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-4 mt-6">
+          <button 
+            id="btnFiltrar" 
+            aria-label="Aplicar filtros" 
+            type="button"
+            class="flex-1 sm:flex-none bg-primary-600 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out"
+          >
+            Aplicar filtros
+          </button>
+          <button 
+            id="btnLimpiar" 
+            aria-label="Limpiar filtros" 
+            type="button"
+            class="flex-1 sm:flex-none bg-gray-500 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out"
+          >
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="bg-white rounded-xl shadow-card mb-10 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800">Registros de Evaluaciones</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table aria-label="Tabla con registros de evaluaciones" id="tablaEvaluaciones" role="grid" class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-primary-600 text-white">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nombre</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Fecha</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Sucursal</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Canal</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Manejo Oferta</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Presencia Ejecutivo</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ofreciendo Marca</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Observaciones</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <!-- Aquí se cargan los registros dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+      <div class="bg-white rounded-xl shadow-card p-6">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Manejo de Oferta Comercial</h3>
+        <div class="h-80">
+          <canvas id="chartManejoOferta" aria-label="Gráfico de Manejo de Oferta Comercial" role="img"></canvas>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-card p-6">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Presencia del Ejecutivo</h3>
+        <div class="h-80">
+          <canvas id="chartPresenciaEjecutivo" aria-label="Gráfico de Presencia del Ejecutivo" role="img"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm py-8">
+      &copy; 2024 Evaluación de Ejecutivos de Ventas
+    </footer>
+  </div>
+
+  <script>
+    // Variables globales para charts
+    let chartManejoOferta = null;
+    let chartPresenciaEjecutivo = null;
+
+    // LocalStorage key
+    const LOCAL_STORAGE_KEY = 'evaluacionesLocal';
+
+    // Función para obtener evaluaciones desde localStorage
+    function getEvaluacionesStorage() {
+      const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    }
+
+    // Función para guardar una evaluación nueva en localStorage
+    function saveEvaluacionStorage(evaluacion) {
+      const evaluaciones = getEvaluacionesStorage();
+      evaluaciones.push(evaluacion);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(evaluaciones));
+    }
+
+    // Manejo del formulario
+    const form = document.getElementById('evaluationForm');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const data = {
+        nombre: form.nombre.value.trim(),
+        fecha: form.fecha.value,
+        sucursal: form.sucursal.value,
+        canal: form.canal.value,
+        manejoOferta: form.manejoOferta.value,
+        presenciaEjecutivo: form.presenciaEjecutivo.value,
+        ofreciendoMarca: form.ofreciendoMarca.value,
+        observaciones: form.observaciones.value.trim(),
+        createdAt: new Date().toISOString()
+      };
+
+      saveEvaluacionStorage(data);
+      alert('Evaluación guardada exitosamente!');
+      form.reset();
+      cargarYMostrarDatos();
+    });
+
+    // Cargar datos con filtros y mostrar gráfica y tabla
+    function cargarYMostrarDatos() {
+      const fechaDesde = document.getElementById('filterFechaDesde').value;
+      const fechaHasta = document.getElementById('filterFechaHasta').value;
+      const sucursalFiltro = document.getElementById('filterSucursal').value;
+      const canalFiltro = document.getElementById('filterCanal').value;
+      const nombreFiltro = document.getElementById('filterNombre').value.trim().toLowerCase();
+
+      let docs = getEvaluacionesStorage();
+
+      if (fechaDesde) {
+        docs = docs.filter(d => d.fecha >= fechaDesde);
+      }
+      if (fechaHasta) {
+        docs = docs.filter(d => d.fecha <= fechaHasta);
+      }
+      if (sucursalFiltro !== 'all') {
+        docs = docs.filter(d => d.sucursal === sucursalFiltro);
+      }
+      if (canalFiltro !== 'all') {
+        docs = docs.filter(d => d.canal === canalFiltro);
+      }
+      if (nombreFiltro.length > 0) {
+        docs = docs.filter(d => d.nombre.toLowerCase().includes(nombreFiltro));
+      }
+
+      mostrarGraficas(docs);
+      mostrarTabla(docs);
+    }
+
+    // Mostrar gráfica con Chart.js - Mejoradas y más atractivas
+    function mostrarGraficas(docs) {
+      const manejoOptions = ['Excelente', 'Bueno', 'Regular', 'Malo', 'No respondió'];
+      const manejoCounts = manejoOptions.map(opt => docs.filter(d => d.manejoOferta === opt).length);
+
+      const presenciaOptions = ['Sí', 'No'];
+      const presenciaCounts = presenciaOptions.map(opt => docs.filter(d => d.presenciaEjecutivo === opt).length);
+
+      // Gráfico Manejo Oferta Comercial (Tipo Doughnut con colores vibrantes y sombra)
+      const ctxManejo = document.getElementById('chartManejoOferta').getContext('2d');
+      if(chartManejoOferta) chartManejoOferta.destroy();
+      chartManejoOferta = new Chart(ctxManejo, {
+        type: 'doughnut',
+        data: {
+          labels: manejoOptions,
+          datasets: [{
+            label: 'Manejo de Oferta Comercial',
+            data: manejoCounts,
+            backgroundColor: [
+              'rgba(16, 185, 129, 0.85)', // Excelente - verde
+              'rgba(59, 130, 246, 0.85)', // Bueno - azul
+              'rgba(250, 204, 21, 0.85)', // Regular - amarillo
+              'rgba(239, 68, 68, 0.85)',  // Malo - rojo
+              'rgba(156, 163, 175, 0.85)' // No respondió - gris
+            ],
+            borderColor: 'rgba(255, 255, 255, 0.8)',
+            borderWidth: 2,
+            hoverOffset: 30
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '60%',
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                font: {size: 14, weight: '600'},
+                color: '#334155'
+              }
+            },
+            tooltip: {
+              enabled: true,
+              callbacks: {
+                label: context => `${context.label}: ${context.parsed} (${((context.parsed / docs.length) * 100).toFixed(1)}%)`
+              }
+            }
+          },
+          animation: {
+            animateRotate: true,
+            animateScale: true
+          }
+        }
+      });
+
+      // Gráfico Presencia Ejecutivo (Horizontal Bar con colores vivos)
+      const ctxPresencia = document.getElementById('chartPresenciaEjecutivo').getContext('2d');
+      if(chartPresenciaEjecutivo) chartPresenciaEjecutivo.destroy();
+      chartPresenciaEjecutivo = new Chart(ctxPresencia, {
+        type: 'bar',
+        data: {
+          labels: presenciaOptions,
+          datasets: [{
+            label: 'Presencia del Ejecutivo',
+            data: presenciaCounts,
+            backgroundColor: [
+              'rgba(16, 185, 129, 0.85)', // Sí verde
+              'rgba(239, 68, 68, 0.85)'   // No rojo
+            ],
+            borderColor: [
+              'rgba(5, 150, 105, 1)',
+              'rgba(220, 38, 38, 1)'
+            ],
+            borderWidth: 2,
+            borderRadius: 6,
+            maxBarThickness: 60
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { stepSize: 1, font: {size: 13, weight: '600'} },
+              grid: { display: false }
+            },
+            y: {
+              ticks: { font: {size: 14, weight: '700'} },
+              grid: { display: false }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              enabled: true,
+              callbacks: {
+                label: ctx => `${ctx.label}: ${ctx.parsed.x} (${((ctx.parsed.x / docs.length) * 100).toFixed(1)}%)`
+              }
+            }
+          },
+          animation: {
+            duration: 1000,
+            easing: 'easeOutQuart'
+          }
+        }
+      });
+    }
+
+    // Mostrar tabla con registros
+    function mostrarTabla(docs) {
+      const tbody = document.querySelector('#tablaEvaluaciones tbody');
+      tbody.innerHTML = '';
+      if(docs.length === 0){
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 8;
+        td.classList.add('px-6', 'py-4', 'text-center', 'text-sm', 'text-gray-500');
+        td.textContent = 'No hay registros que mostrar.';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+      }
+      docs.forEach(d => {
+        const tr = document.createElement('tr');
+        tr.classList.add('hover:bg-gray-50');
+        tr.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.nombre)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca)}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Escape HTML para evitar XSS en la tabla
+    function escapeHtml(text) {
+      if(!text) return '';
+      return text.replace(/[&<>"']/g, function(m) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        })[m];
+      });
+    }
+
+    // Event listeners filtros
+    document.getElementById('btnFiltrar').addEventListener('click', e => {
+      e.preventDefault();
+      cargarYMostrarDatos();
+    });
+
+    document.getElementById('btnLimpiar').addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('filterFechaDesde').value = '';
+      document.getElementById('filterFechaHasta').value = '';
+      document.getElementById('filterSucursal').value = 'all';
+      document.getElementById('filterCanal').value = 'all';
+      document.getElementById('filterNombre').value = '';
+      cargarYMostrarDatos();
+    });
+
+    // Inicializar fecha actual en formulario y cargar datos
+    window.onload = () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('fecha').value = today;
+      cargarYMostrarDatos();
+    };
+  </script>
+</body>
+</html>
