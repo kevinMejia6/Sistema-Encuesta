@@ -9,6 +9,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -307,320 +309,342 @@
       &copy; 2024 Evaluación de Ejecutivos de Ventas
     </footer>
   </div>
+<script type="module">
+  // Configuración de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXHzK22QMOBusCterW4VwPj1ItF_ME7g4",
+    authDomain: "prueba-vupioh.firebaseapp.com",
+    projectId: "prueba-vupioh",
+    storageBucket: "prueba-vupioh.firebasestorage.app",
+    messagingSenderId: "1022149703484",
+    appId: "1:1022149703484:web:c73ef30d04ae7afdb8d039",
+    measurementId: "G-FMDC0D1S0H"
+  };
+  
+  // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+  
+  // Referencia a Firestore
+  const db = firebase.firestore();
+  const evaluacionesRef = db.collection('evaluaciones');
+  
+  // Variables globales para charts
+  let chartManejoOferta = null;
+  let chartPresenciaEjecutivo = null;
 
-  <script>
-    // Variables globales para charts
-    let chartManejoOferta = null;
-    let chartPresenciaEjecutivo = null;
+  // Manejo del formulario
+  const form = document.getElementById('evaluationForm');
+  const presenciaEjecutivoSelect = document.getElementById('presenciaEjecutivo');
+  const manejoOfertaDiv = document.querySelector('#manejoOferta').parentElement;
+  const ofreciendoMarcaDiv = document.querySelector('#ofreciendoMarca').parentElement;
+  const supervisorConocedorDiv = document.getElementById('supervisorConocedorDiv');
 
-    // LocalStorage key
-    const LOCAL_STORAGE_KEY = 'evaluacionesLocal';
+  presenciaEjecutivoSelect.addEventListener('change', function() {
+    if (this.value === 'No') {
+      manejoOfertaDiv.style.display = 'none';
+      ofreciendoMarcaDiv.style.display = 'none';
+      supervisorConocedorDiv.classList.remove('hidden');
 
-    // Función para obtener evaluaciones desde localStorage
-    function getEvaluacionesStorage() {
-      const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
+      // Quitar el atributo required
+      document.getElementById('manejoOferta').removeAttribute('required');
+      document.getElementById('ofreciendoMarca').removeAttribute('required');
+      document.getElementById('supervisorConocedor').setAttribute('required', 'required');
+    } else {
+      manejoOfertaDiv.style.display = 'block';
+      ofreciendoMarcaDiv.style.display = 'block';
+
+      // Agregar nuevamente el atributo required si es necesario
+      document.getElementById('manejoOferta').setAttribute('required', 'required');
+      document.getElementById('ofreciendoMarca').setAttribute('required', 'required');
+
+      supervisorConocedorDiv.classList.add('hidden');
+      document.getElementById('supervisorConocedor').removeAttribute('required');
     }
+  });
 
-    // Función para guardar una evaluación nueva en localStorage
-    function saveEvaluacionStorage(evaluacion) {
-      const evaluaciones = getEvaluacionesStorage();
-      evaluaciones.push(evaluacion);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(evaluaciones));
-    }
+  form.addEventListener('submit', e => {
+    e.preventDefault();
 
-    // Manejo del formulario
-    const form = document.getElementById('evaluationForm');
-    const presenciaEjecutivoSelect = document.getElementById('presenciaEjecutivo');
-    const manejoOfertaDiv = document.querySelector('#manejoOferta').parentElement;
-    const ofreciendoMarcaDiv = document.querySelector('#ofreciendoMarca').parentElement;
-    const supervisorConocedorDiv = document.getElementById('supervisorConocedorDiv');
-
-
-
-    // Agregar el nuevo input al formulario
-
-    presenciaEjecutivoSelect.addEventListener('change', function () {
-      if (this.value === 'No') {
-        manejoOfertaDiv.style.display = 'none';
-        ofreciendoMarcaDiv.style.display = 'none';
-        supervisorConocedorDiv.classList.remove('hidden');
-
-        // Quitar el atributo required
-        document.getElementById('manejoOferta').removeAttribute('required');
-        document.getElementById('ofreciendoMarca').removeAttribute('required');
-
-      } else {
-        manejoOfertaDiv.style.display = 'block';
-        ofreciendoMarcaDiv.style.display = 'block';
-
-        // Agregar nuevamente el atributo required si es necesario
-        document.getElementById('manejoOferta').setAttribute('required', 'required');
-        document.getElementById('ofreciendoMarca').setAttribute('required', 'required');
-
-        supervisorConocedorDiv.classList.add('hidden');
-        document.getElementById('supervisorConocedor').removeAttribute('required');
-
-      }
-    });
-
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-
-      const data = {
-        nombre: form.nombre.value.trim(),
-        fecha: form.fecha.value,
-        sucursal: form.sucursal.value,
-        canal: form.canal.value,
-        manejoOferta: form.manejoOferta.value,
-        presenciaEjecutivo: form.presenciaEjecutivo.value,
-        ofreciendoMarca: form.ofreciendoMarca.value,
-        supervisorConocedor: form.supervisorConocedor.value,
-        auditor: form.auditor.value,
-        observaciones: form.observaciones.value.trim(),
-        createdAt: new Date().toISOString()
-      };
-      try {
-        saveEvaluacionStorage(data);
-        showToast('Evaluación guardada exitosamente!', 'success');
-      } catch (error) {
-        showToast('Error al guardar la evaluación. Inténtalo de nuevo.', 'error');
-      }
-      form.reset();
-      cargarYMostrarDatos();
-    });
-
-    // Cargar datos con filtros y mostrar gráfica y tabla
-    function cargarYMostrarDatos() {
-      const fechaDesde = document.getElementById('filterFechaDesde').value;
-      const fechaHasta = document.getElementById('filterFechaHasta').value;
-      const sucursalFiltro = document.getElementById('filterSucursal').value;
-      const canalFiltro = document.getElementById('filterCanal').value;
-      const nombreFiltro = document.getElementById('filterNombre').value.trim().toLowerCase();
-
-      let docs = getEvaluacionesStorage();
-
-      if (fechaDesde) {
-        docs = docs.filter(d => d.fecha >= fechaDesde);
-      }
-      if (fechaHasta) {
-        docs = docs.filter(d => d.fecha <= fechaHasta);
-      }
-      if (sucursalFiltro !== 'all') {
-        docs = docs.filter(d => d.sucursal === sucursalFiltro);
-      }
-      if (canalFiltro !== 'all') {
-        docs = docs.filter(d => d.canal === canalFiltro);
-      }
-      if (nombreFiltro.length > 0) {
-        docs = docs.filter(d => d.nombre.toLowerCase().includes(nombreFiltro));
-      }
-
-      mostrarGraficas(docs);
-      mostrarTabla(docs);
-    }
-
-    // Mostrar gráfica con Chart.js
-    function mostrarGraficas(docs) {
-      const manejoOptions = ['Excelente', 'Bueno', 'Regular', 'Malo', 'No respondió'];
-      const manejoCounts = manejoOptions.map(opt => docs.filter(d => d.manejoOferta === opt).length);
-
-      const presenciaOptions = ['Sí', 'No'];
-      const presenciaCounts = presenciaOptions.map(opt => docs.filter(d => d.presenciaEjecutivo === opt).length);
-
-      // Gráfico Manejo Oferta Comercial
-      const ctxManejo = document.getElementById('chartManejoOferta').getContext('2d');
-      if (chartManejoOferta) chartManejoOferta.destroy();
-      chartManejoOferta = new Chart(ctxManejo, {
-        type: 'doughnut',
-        data: {
-          labels: manejoOptions,
-          datasets: [{
-            label: 'Manejo de Oferta Comercial',
-            data: manejoCounts,
-            backgroundColor: [
-              'rgba(16, 185, 129, 0.85)', // Excelente - verde
-              'rgba(59, 130, 246, 0.85)', // Bueno - azul
-              'rgba(250, 204, 21, 0.85)', // Regular - amarillo
-              'rgba(239, 68, 68, 0.85)',  // Malo - rojo
-              'rgba(156, 163, 175, 0.85)' // No respondió - gris
-            ],
-            borderColor: 'rgba(255, 255, 255, 0.8)',
-            borderWidth: 2,
-            hoverOffset: 30
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '60%',
-          plugins: {
-            legend: {
-              position: 'right',
-              labels: {
-                font: { size: 14, weight: '600' },
-                color: '#334155'
-              }
-            },
-            tooltip: {
-              enabled: true,
-              callbacks: {
-                label: context => `${context.label}: ${context.parsed} (${((context.parsed / docs.length) * 100).toFixed(1)}%)`
-              }
-            }
-          },
-          animation: {
-            animateRotate: true,
-            animateScale: true
-          }
-        }
-      });
-
-      // Gráfico Presencia Ejecutivo
-      const ctxPresencia = document.getElementById('chartPresenciaEjecutivo').getContext('2d');
-      if (chartPresenciaEjecutivo) chartPresenciaEjecutivo.destroy();
-      chartPresenciaEjecutivo = new Chart(ctxPresencia, {
-        type: 'bar',
-        data: {
-          labels: presenciaOptions,
-          datasets: [{
-            label: 'Presencia del Ejecutivo',
-            data: presenciaCounts,
-            backgroundColor: [
-              'rgba(16, 185, 129, 0.85)', // Sí verde
-              'rgba(239, 68, 68, 0.85)'   // No rojo
-            ],
-            borderColor: [
-              'rgba(5, 150, 105, 1)',
-              'rgba(220, 38, 38, 1)'
-            ],
-            borderWidth: 2,
-            borderRadius: 6,
-            maxBarThickness: 60
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              beginAtZero: true,
-              ticks: { stepSize: 1, font: { size: 13, weight: '600' } },
-              grid: { display: false }
-            },
-            y: {
-              ticks: { font: { size: 14, weight: '700' } },
-              grid: { display: false }
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              enabled: true,
-              callbacks: {
-                label: ctx => `${ctx.label}: ${ctx.parsed.x} (${((ctx.parsed.x / docs.length) * 100).toFixed(1)}%)`
-              }
-            }
-          },
-          animation: {
-            duration: 1000,
-            easing: 'easeOutQuart'
-          }
-        }
-      });
-    }
-
-    // Mostrar tabla con registros
-    function mostrarTabla(docs) {
-      const tbody = document.querySelector('#tablaEvaluaciones tbody');
-      tbody.innerHTML = '';
-      if (docs.length === 0) {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 9; // Ajustado para incluir la columna de supervisorConocedor
-        td.classList.add('px-6', 'py-4', 'text-center', 'text-sm', 'text-gray-500');
-        td.textContent = 'No hay registros que mostrar.';
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-        return;
-      }
-      docs.forEach(d => {
-        const tr = document.createElement('tr');
-        tr.classList.add('hover:bg-gray-50');
-        tr.innerHTML = `
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.nombre)}</td>
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta)}</td>
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca)}</td>
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.supervisorConocedor)}</td> <!-- Asegúrate de incluir esto -->
-         <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
-         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.auditor)}</td> <!-- Asegúrate de incluir esto -->
-
-       `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Escape HTML para evitar XSS en la tabla
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.replace(/[&<>"']/g, function (m) {
-        return ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        })[m];
-      });
-    }
-
-    // Event listeners filtros
-    document.getElementById('btnFiltrar').addEventListener('click', e => {
-      e.preventDefault();
-      cargarYMostrarDatos();
-    });
-
-    document.getElementById('btnLimpiar').addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('filterFechaDesde').value = '';
-      document.getElementById('filterFechaHasta').value = '';
-      document.getElementById('filterSucursal').value = 'all';
-      document.getElementById('filterCanal').value = 'all';
-      document.getElementById('filterNombre').value = '';
-      cargarYMostrarDatos();
-    });
-
-    // Inicializar fecha actual en formulario y cargar datos
-    window.onload = () => {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('fecha').value = today;
-      cargarYMostrarDatos();
+    const data = {
+      nombre: form.nombre.value.trim(),
+      fecha: form.fecha.value,
+      sucursal: form.sucursal.value,
+      canal: form.canal.value,
+      manejoOferta: form.manejoOferta.value,
+      presenciaEjecutivo: form.presenciaEjecutivo.value,
+      ofreciendoMarca: form.ofreciendoMarca.value,
+      supervisorConocedor: form.supervisorConocedor.value || '',
+      auditor: form.auditor.value,
+      observaciones: form.observaciones.value.trim(),
+      createdAt: firebase.firestore.Timestamp.now()
     };
 
-    function showToast(message, type) {
-      const toast = document.createElement('div');
-      toast.className = `p-4 mb-4 text-sm text-white rounded-lg shadow-md ${type === 'success' ? 'bg-green-500' : 'bg-red-500'
-        }`;
-      toast.innerText = message;
+    // Guardar en Firebase
+    evaluacionesRef.add(data)
+      .then(() => {
+        showToast('Evaluación guardada exitosamente!', 'success');
+        form.reset();
+        cargarYMostrarDatos();
+      })
+      .catch(error => {
+        console.error("Error al guardar la evaluación: ", error);
+        showToast('Error al guardar la evaluación. Inténtalo de nuevo.', 'error');
+      });
+  });
 
-      // Agregar el toast al contenedor
-      document.getElementById('toastContainer').appendChild(toast);
+  // Función para cargar datos desde Firebase con filtros
+  function cargarYMostrarDatos() {
+    const fechaDesde = document.getElementById('filterFechaDesde').value;
+    const fechaHasta = document.getElementById('filterFechaHasta').value;
+    const sucursalFiltro = document.getElementById('filterSucursal').value;
+    const canalFiltro = document.getElementById('filterCanal').value;
+    const nombreFiltro = document.getElementById('filterNombre').value.trim().toLowerCase();
 
-      // Eliminar el toast después de 3 segundos
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
+    // Construir la consulta base
+    let query = evaluacionesRef;
+    
+    // Aplicar filtros de fecha
+    if (fechaDesde && fechaHasta) {
+      query = query.where('fecha', '>=', fechaDesde).where('fecha', '<=', fechaHasta);
+    } else if (fechaDesde) {
+      query = query.where('fecha', '>=', fechaDesde);
+    } else if (fechaHasta) {
+      query = query.where('fecha', '<=', fechaHasta);
     }
+    
+    // Aplicar filtro de sucursal
+    if (sucursalFiltro !== 'all') {
+      query = query.where('sucursal', '==', sucursalFiltro);
+    }
+    
+    // Aplicar filtro de canal
+    if (canalFiltro !== 'all') {
+      query = query.where('canal', '==', canalFiltro);
+    }
+    
+    // Ejecutar la consulta
+    query.get()
+      .then(snapshot => {
+        let docs = [];
+        snapshot.forEach(doc => {
+          // Agregar los datos del documento con su ID
+          docs.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        
+        // Aplicar filtro de nombre (debe hacerse en memoria porque Firestore no soporta búsqueda parcial)
+        if (nombreFiltro.length > 0) {
+          docs = docs.filter(d => d.nombre.toLowerCase().includes(nombreFiltro));
+        }
+        
+        mostrarGraficas(docs);
+        mostrarTabla(docs);
+      })
+      .catch(error => {
+        console.error("Error al obtener las evaluaciones:", error);
+        showToast('Error al cargar los datos. Inténtalo de nuevo.', 'error');
+      });
+  }
 
-  </script>
+  // Mostrar gráfica con Chart.js
+  function mostrarGraficas(docs) {
+    const manejoOptions = ['Excelente', 'Bueno', 'Regular', 'Malo', 'No respondió'];
+    const manejoCounts = manejoOptions.map(opt => docs.filter(d => d.manejoOferta === opt).length);
+
+    const presenciaOptions = ['Sí', 'No'];
+    const presenciaCounts = presenciaOptions.map(opt => docs.filter(d => d.presenciaEjecutivo === opt).length);
+
+    // Gráfico Manejo Oferta Comercial
+    const ctxManejo = document.getElementById('chartManejoOferta').getContext('2d');
+    if (chartManejoOferta) chartManejoOferta.destroy();
+    chartManejoOferta = new Chart(ctxManejo, {
+      type: 'doughnut',
+      data: {
+        labels: manejoOptions,
+        datasets: [{
+          label: 'Manejo de Oferta Comercial',
+          data: manejoCounts,
+          backgroundColor: [
+            'rgba(16, 185, 129, 0.85)', // Excelente - verde
+            'rgba(59, 130, 246, 0.85)', // Bueno - azul
+            'rgba(250, 204, 21, 0.85)', // Regular - amarillo
+            'rgba(239, 68, 68, 0.85)',  // Malo - rojo
+            'rgba(156, 163, 175, 0.85)' // No respondió - gris
+          ],
+          borderColor: 'rgba(255, 255, 255, 0.8)',
+          borderWidth: 2,
+          hoverOffset: 30
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              font: { size: 14, weight: '600' },
+              color: '#334155'
+            }
+          },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: context => `${context.label}: ${context.parsed} (${((context.parsed / docs.length) * 100).toFixed(1)}%)`
+            }
+          }
+        },
+        animation: {
+          animateRotate: true,
+          animateScale: true
+        }
+      }
+    });
+
+    // Gráfico Presencia Ejecutivo
+    const ctxPresencia = document.getElementById('chartPresenciaEjecutivo').getContext('2d');
+    if (chartPresenciaEjecutivo) chartPresenciaEjecutivo.destroy();
+    chartPresenciaEjecutivo = new Chart(ctxPresencia, {
+      type: 'bar',
+      data: {
+        labels: presenciaOptions,
+        datasets: [{
+          label: 'Presencia del Ejecutivo',
+          data: presenciaCounts,
+          backgroundColor: [
+            'rgba(16, 185, 129, 0.85)', // Sí verde
+            'rgba(239, 68, 68, 0.85)'   // No rojo
+          ],
+          borderColor: [
+            'rgba(5, 150, 105, 1)',
+            'rgba(220, 38, 38, 1)'
+          ],
+          borderWidth: 2,
+          borderRadius: 6,
+          maxBarThickness: 60
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, font: { size: 13, weight: '600' } },
+            grid: { display: false }
+          },
+          y: {
+            ticks: { font: { size: 14, weight: '700' } },
+            grid: { display: false }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: ctx => `${ctx.label}: ${ctx.parsed.x} (${((ctx.parsed.x / docs.length) * 100).toFixed(1)}%)`
+            }
+          }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+  }
+
+  // Mostrar tabla con registros
+  function mostrarTabla(docs) {
+    const tbody = document.querySelector('#tablaEvaluaciones tbody');
+    tbody.innerHTML = '';
+    if (docs.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 10; // Ajustado para incluir todas las columnas
+      td.classList.add('px-6', 'py-4', 'text-center', 'text-sm', 'text-gray-500');
+      td.textContent = 'No hay registros que mostrar.';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+    docs.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.classList.add('hover:bg-gray-50');
+      tr.innerHTML = `
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.nombre)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta || 'N/A')}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca || 'N/A')}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.supervisorConocedor || 'N/A')}</td>
+        <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.auditor)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Escape HTML para evitar XSS en la tabla
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/[&<>"']/g, function (m) {
+      return ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[m];
+    });
+  }
+
+  // Event listeners filtros
+  document.getElementById('btnFiltrar').addEventListener('click', e => {
+    e.preventDefault();
+    cargarYMostrarDatos();
+  });
+
+  document.getElementById('btnLimpiar').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('filterFechaDesde').value = '';
+    document.getElementById('filterFechaHasta').value = '';
+    document.getElementById('filterSucursal').value = 'all';
+    document.getElementById('filterCanal').value = 'all';
+    document.getElementById('filterNombre').value = '';
+    cargarYMostrarDatos();
+  });
+
+  function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `p-4 mb-4 text-sm text-white rounded-lg shadow-md ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+    toast.innerText = message;
+
+    // Agregar el toast al contenedor
+    document.getElementById('toastContainer').appendChild(toast);
+
+    // Eliminar el toast después de 3 segundos
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+
+  // Inicializar fecha actual en formulario y cargar datos
+  window.onload = () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('fecha').value = today;
+    cargarYMostrarDatos();
+  };
+</script>
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed top-0 right-0 p-6 space-y-4 z-50"></div>
 
