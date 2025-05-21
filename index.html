@@ -10,42 +10,8 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              200: '#bfdbfe',
-              300: '#93c5fd',
-              400: '#60a5fa',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              800: '#1e40af',
-              900: '#1e3a8a',
-            },
-            secondary: {
-              50: '#f8fafc',
-              400: '#94a3b8',
-              500: '#64748b',
-              600: '#475569',
-              700: '#334155',
-              800: '#1e293b',
-              900: '#0f172a',
-            },
-          },
-          boxShadow: {
-            card: '0 0 25px 0 rgba(0, 0, 0, 0.05)',
-            input: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-          },
-        },
-      },
-    }
-  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
 </head>
 
 <body class="bg-slate-50 text-gray-800 min-h-screen">
@@ -304,351 +270,197 @@
       </div>
     </div>
 
+
+
+    <!-- Modal de Edición -->
+    <div id="editModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center transition-opacity duration-300">
+  <div class="relative mx-auto p-5 w-full max-w-4xl animate-slide-down">
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden transition-all duration-300">
+      <!-- Encabezado -->
+      <div class="flex justify-between items-center bg-gray-50 px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-bold text-gray-900">Editar Evaluación</h3>
+        <button id="closeModal" class="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200" aria-label="Cerrar modal">
+          <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Formulario -->
+      <form id="editForm" onsubmit="handleEditSubmit(event)" aria-label="Formulario de Edición de Evaluación" class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          
+          <!-- Nombre del Ejecutivo -->
+          <div class="space-y-1">
+            <label for="editNombre" class="block text-sm font-semibold text-gray-700 mb-1">
+              Nombre del ejecutivo *
+            </label>
+            <input type="text" id="editNombre" name="editNombre" placeholder="Nombre completo" required
+                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition-all duration-200">
+          </div>
+
+          <!-- Fecha -->
+          <div class="space-y-1">
+            <label for="editFecha" class="block text-sm font-semibold text-gray-700 mb-1">
+              Fecha *
+            </label>
+            <input type="date" id="editFecha" name="editFecha" required
+                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-700 transition-all duration-200">
+          </div>
+
+          <!-- Sucursal -->
+          <div class="space-y-1">
+            <label for="editSucursal" class="block text-sm font-semibold text-gray-700 mb-1">
+              Sucursal *
+            </label>
+            <select id="editSucursal" name="editSucursal" required
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:24px] transition-all duration-200">
+              <option value="">-- Selecciona una sucursal --</option>
+              <option value="Soyapango">Soyapango</option>
+              <option value="Santa Ana">Santa Ana</option>
+              <option value="Sonsonate">Sonsonate</option>
+              <option value="Ahuchapan">Ahuchapan</option>
+            </select>
+          </div>
+
+          <!-- Canal -->
+          <div class="space-y-1">
+            <label for="editCanal" class="block text-sm font-semibold text-gray-700 mb-1">
+              Canal *
+            </label>
+            <select id="editCanal" name="editCanal" required
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:24px] transition-all duration-200">
+              <option value="">-- Selecciona un canal --</option>
+              <option value="PANELES">PANELES</option>
+              <option value="PROMOTORIA">PROMOTORIA</option>
+            </select>
+          </div>
+
+          <!-- Presencia Ejecutivo -->
+          <div class="space-y-1">
+            <label for="editPresenciaEjecutivo" class="block text-sm font-semibold text-gray-700 mb-1">
+              ¿Ejecutivo en PDA/ruta? *
+            </label>
+            <select id="editPresenciaEjecutivo" name="editPresenciaEjecutivo" required
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:24px] transition-all duration-200">
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <!-- Manejo de Oferta -->
+          <div class="space-y-1" id="editManejoOfertaDiv">
+            <label for="editManejoOferta" class="block text-sm font-semibold text-gray-700 mb-1">
+              Manejo de oferta comercial *
+            </label>
+            <select id="editManejoOferta" name="editManejoOferta" required
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:24px] transition-all duration-200">
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Excelente">Excelente</option>
+              <option value="Bueno">Bueno</option>
+              <option value="Regular">Regular</option>
+              <option value="Malo">Malo</option>
+              <option value="No respondió">No respondió</option>
+            </select>
+          </div>
+
+          <!-- Supervisor Conocedor -->
+          <div class="space-y-1" id="editSupervisorConocedorDiv">
+            <label for="editSupervisorConocedor" class="block text-sm font-semibold text-gray-700 mb-1">
+              ¿Supervisor conoce ausencia? *
+            </label>
+            <select id="editSupervisorConocedor" name="editSupervisorConocedor"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:24px] transition-all duration-200">
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <!-- Ofreciendo Marca -->
+          <div class="space-y-1" id="editOfreciendoMarcaDiv">
+            <label for="editOfreciendoMarca" class="block text-sm font-semibold text-gray-700 mb-1">
+              ¿Vendedor ofrecía marca? *
+            </label>
+            <select id="editOfreciendoMarca" name="editOfreciendoMarca" required
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:24px] transition-all duration-200">
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <!-- Auditor -->
+          <div class="space-y-1">
+            <label for="editAuditor" class="block text-sm font-semibold text-gray-700 mb-1">
+              Nombre del Auditor *
+            </label>
+            <select id="editAuditor" name="editAuditor" required
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:24px] transition-all duration-200">
+              <option value="">-- Selecciona un Auditor --</option>
+              <option value="Carlos Hernandez">Carlos Hernandez</option>
+              <option value="Flor Gaitan">Flor Gaitan</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="mt-6">
+          <label for="editObservaciones" class="block text-sm font-semibold text-gray-700 mb-2">
+            Observaciones
+          </label>
+          <textarea id="editObservaciones" name="editObservaciones" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 resize-none min-h-[120px] transition-all duration-200"
+                    placeholder="Escribe tus observaciones aquí..."></textarea>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end gap-3">
+          <button type="button" id="cancelEditBtn"
+                  class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200 active:bg-gray-300">
+            Cancelar
+          </button>
+          <button type="submit"
+                  class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 active:bg-primary-800">
+            Guardar Cambios
+          </button>
+        </div>
+
+        <input type="hidden" id="editRecordId">
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes slide-down {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .animate-slide-down {
+    animation: slide-down 0.3s ease-out;
+  }
+  select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M15.3 9.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.4l3.3 3.29 3.3-3.3z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em;
+  }
+</style>
+
     <!-- Footer -->
     <footer class="text-center text-gray-500 text-sm py-8">
       &copy; 2024 Evaluación de Ejecutivos de Ventas
     </footer>
   </div>
-<script type="module">
-  // Configuración de Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyCXHzK22QMOBusCterW4VwPj1ItF_ME7g4",
-    authDomain: "prueba-vupioh.firebaseapp.com",
-    projectId: "prueba-vupioh",
-    storageBucket: "prueba-vupioh.firebasestorage.app",
-    messagingSenderId: "1022149703484",
-    appId: "1:1022149703484:web:c73ef30d04ae7afdb8d039",
-    measurementId: "G-FMDC0D1S0H"
-  };
-  
-  // Inicializar Firebase
-  firebase.initializeApp(firebaseConfig);
-  
-  // Referencia a Firestore
-  const db = firebase.firestore();
-  const evaluacionesRef = db.collection('evaluaciones');
-  
-  // Variables globales para charts
-  let chartManejoOferta = null;
-  let chartPresenciaEjecutivo = null;
 
-  // Manejo del formulario
-  const form = document.getElementById('evaluationForm');
-  const presenciaEjecutivoSelect = document.getElementById('presenciaEjecutivo');
-  const manejoOfertaDiv = document.querySelector('#manejoOferta').parentElement;
-  const ofreciendoMarcaDiv = document.querySelector('#ofreciendoMarca').parentElement;
-  const supervisorConocedorDiv = document.getElementById('supervisorConocedorDiv');
 
-  presenciaEjecutivoSelect.addEventListener('change', function() {
-    if (this.value === 'No') {
-      manejoOfertaDiv.style.display = 'none';
-      ofreciendoMarcaDiv.style.display = 'none';
-      supervisorConocedorDiv.classList.remove('hidden');
 
-      // Quitar el atributo required
-      document.getElementById('manejoOferta').removeAttribute('required');
-      document.getElementById('ofreciendoMarca').removeAttribute('required');
-      document.getElementById('supervisorConocedor').setAttribute('required', 'required');
-    } else {
-      manejoOfertaDiv.style.display = 'block';
-      ofreciendoMarcaDiv.style.display = 'block';
-
-      // Agregar nuevamente el atributo required si es necesario
-      document.getElementById('manejoOferta').setAttribute('required', 'required');
-      document.getElementById('ofreciendoMarca').setAttribute('required', 'required');
-
-      supervisorConocedorDiv.classList.add('hidden');
-      document.getElementById('supervisorConocedor').removeAttribute('required');
-    }
-  });
-
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-
-    const data = {
-      nombre: form.nombre.value.trim(),
-      fecha: form.fecha.value,
-      sucursal: form.sucursal.value,
-      canal: form.canal.value,
-      manejoOferta: form.manejoOferta.value,
-      presenciaEjecutivo: form.presenciaEjecutivo.value,
-      ofreciendoMarca: form.ofreciendoMarca.value,
-      supervisorConocedor: form.supervisorConocedor.value || '',
-      auditor: form.auditor.value,
-      observaciones: form.observaciones.value.trim(),
-      createdAt: firebase.firestore.Timestamp.now()
-    };
-
-    // Guardar en Firebase
-    evaluacionesRef.add(data)
-      .then(() => {
-        showToast('Evaluación guardada exitosamente!', 'success');
-        form.reset();
-        cargarYMostrarDatos();
-      })
-      .catch(error => {
-        console.error("Error al guardar la evaluación: ", error);
-        showToast('Error al guardar la evaluación. Inténtalo de nuevo.', 'error');
-      });
-  });
-
-  // Función para cargar datos desde Firebase con filtros
-  function cargarYMostrarDatos() {
-    const fechaDesde = document.getElementById('filterFechaDesde').value;
-    const fechaHasta = document.getElementById('filterFechaHasta').value;
-    const sucursalFiltro = document.getElementById('filterSucursal').value;
-    const canalFiltro = document.getElementById('filterCanal').value;
-    const nombreFiltro = document.getElementById('filterNombre').value.trim().toLowerCase();
-
-    // Construir la consulta base
-    let query = evaluacionesRef;
-    
-    // Aplicar filtros de fecha
-    if (fechaDesde && fechaHasta) {
-      query = query.where('fecha', '>=', fechaDesde).where('fecha', '<=', fechaHasta);
-    } else if (fechaDesde) {
-      query = query.where('fecha', '>=', fechaDesde);
-    } else if (fechaHasta) {
-      query = query.where('fecha', '<=', fechaHasta);
-    }
-    
-    // Aplicar filtro de sucursal
-    if (sucursalFiltro !== 'all') {
-      query = query.where('sucursal', '==', sucursalFiltro);
-    }
-    
-    // Aplicar filtro de canal
-    if (canalFiltro !== 'all') {
-      query = query.where('canal', '==', canalFiltro);
-    }
-    
-    // Ejecutar la consulta
-    query.get()
-      .then(snapshot => {
-        let docs = [];
-        snapshot.forEach(doc => {
-          // Agregar los datos del documento con su ID
-          docs.push({
-            id: doc.id,
-            ...doc.data()
-          });
-        });
-        
-        // Aplicar filtro de nombre (debe hacerse en memoria porque Firestore no soporta búsqueda parcial)
-        if (nombreFiltro.length > 0) {
-          docs = docs.filter(d => d.nombre.toLowerCase().includes(nombreFiltro));
-        }
-        
-        mostrarGraficas(docs);
-        mostrarTabla(docs);
-      })
-      .catch(error => {
-        console.error("Error al obtener las evaluaciones:", error);
-        showToast('Error al cargar los datos. Inténtalo de nuevo.', 'error');
-      });
-  }
-
-  // Mostrar gráfica con Chart.js
-  function mostrarGraficas(docs) {
-    const manejoOptions = ['Excelente', 'Bueno', 'Regular', 'Malo', 'No respondió'];
-    const manejoCounts = manejoOptions.map(opt => docs.filter(d => d.manejoOferta === opt).length);
-
-    const presenciaOptions = ['Sí', 'No'];
-    const presenciaCounts = presenciaOptions.map(opt => docs.filter(d => d.presenciaEjecutivo === opt).length);
-
-    // Gráfico Manejo Oferta Comercial
-    const ctxManejo = document.getElementById('chartManejoOferta').getContext('2d');
-    if (chartManejoOferta) chartManejoOferta.destroy();
-    chartManejoOferta = new Chart(ctxManejo, {
-      type: 'doughnut',
-      data: {
-        labels: manejoOptions,
-        datasets: [{
-          label: 'Manejo de Oferta Comercial',
-          data: manejoCounts,
-          backgroundColor: [
-            'rgba(16, 185, 129, 0.85)', // Excelente - verde
-            'rgba(59, 130, 246, 0.85)', // Bueno - azul
-            'rgba(250, 204, 21, 0.85)', // Regular - amarillo
-            'rgba(239, 68, 68, 0.85)',  // Malo - rojo
-            'rgba(156, 163, 175, 0.85)' // No respondió - gris
-          ],
-          borderColor: 'rgba(255, 255, 255, 0.8)',
-          borderWidth: 2,
-          hoverOffset: 30
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '60%',
-        plugins: {
-          legend: {
-            position: 'right',
-            labels: {
-              font: { size: 14, weight: '600' },
-              color: '#334155'
-            }
-          },
-          tooltip: {
-            enabled: true,
-            callbacks: {
-              label: context => `${context.label}: ${context.parsed} (${((context.parsed / docs.length) * 100).toFixed(1)}%)`
-            }
-          }
-        },
-        animation: {
-          animateRotate: true,
-          animateScale: true
-        }
-      }
-    });
-
-    // Gráfico Presencia Ejecutivo
-    const ctxPresencia = document.getElementById('chartPresenciaEjecutivo').getContext('2d');
-    if (chartPresenciaEjecutivo) chartPresenciaEjecutivo.destroy();
-    chartPresenciaEjecutivo = new Chart(ctxPresencia, {
-      type: 'bar',
-      data: {
-        labels: presenciaOptions,
-        datasets: [{
-          label: 'Presencia del Ejecutivo',
-          data: presenciaCounts,
-          backgroundColor: [
-            'rgba(16, 185, 129, 0.85)', // Sí verde
-            'rgba(239, 68, 68, 0.85)'   // No rojo
-          ],
-          borderColor: [
-            'rgba(5, 150, 105, 1)',
-            'rgba(220, 38, 38, 1)'
-          ],
-          borderWidth: 2,
-          borderRadius: 6,
-          maxBarThickness: 60
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: {
-            beginAtZero: true,
-            ticks: { stepSize: 1, font: { size: 13, weight: '600' } },
-            grid: { display: false }
-          },
-          y: {
-            ticks: { font: { size: 14, weight: '700' } },
-            grid: { display: false }
-          }
-        },
-        plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            enabled: true,
-            callbacks: {
-              label: ctx => `${ctx.label}: ${ctx.parsed.x} (${((ctx.parsed.x / docs.length) * 100).toFixed(1)}%)`
-            }
-          }
-        },
-        animation: {
-          duration: 1000,
-          easing: 'easeOutQuart'
-        }
-      }
-    });
-  }
-
-  // Mostrar tabla con registros
-  function mostrarTabla(docs) {
-    const tbody = document.querySelector('#tablaEvaluaciones tbody');
-    tbody.innerHTML = '';
-    if (docs.length === 0) {
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.colSpan = 10; // Ajustado para incluir todas las columnas
-      td.classList.add('px-6', 'py-4', 'text-center', 'text-sm', 'text-gray-500');
-      td.textContent = 'No hay registros que mostrar.';
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-      return;
-    }
-    docs.forEach(d => {
-      const tr = document.createElement('tr');
-      tr.classList.add('hover:bg-gray-50');
-      tr.innerHTML = `
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.nombre)}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta || 'N/A')}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca || 'N/A')}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.supervisorConocedor || 'N/A')}</td>
-        <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.auditor)}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  // Escape HTML para evitar XSS en la tabla
-  function escapeHtml(text) {
-    if (!text) return '';
-    return text.replace(/[&<>"']/g, function (m) {
-      return ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-      })[m];
-    });
-  }
-
-  // Event listeners filtros
-  document.getElementById('btnFiltrar').addEventListener('click', e => {
-    e.preventDefault();
-    cargarYMostrarDatos();
-  });
-
-  document.getElementById('btnLimpiar').addEventListener('click', e => {
-    e.preventDefault();
-    document.getElementById('filterFechaDesde').value = '';
-    document.getElementById('filterFechaHasta').value = '';
-    document.getElementById('filterSucursal').value = 'all';
-    document.getElementById('filterCanal').value = 'all';
-    document.getElementById('filterNombre').value = '';
-    cargarYMostrarDatos();
-  });
-
-  function showToast(message, type) {
-    const toast = document.createElement('div');
-    toast.className = `p-4 mb-4 text-sm text-white rounded-lg shadow-md ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
-    toast.innerText = message;
-
-    // Agregar el toast al contenedor
-    document.getElementById('toastContainer').appendChild(toast);
-
-    // Eliminar el toast después de 3 segundos
-    setTimeout(() => {
-      toast.remove();
-    }, 3000);
-  }
-
-  // Inicializar fecha actual en formulario y cargar datos
-  window.onload = () => {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('fecha').value = today;
-    cargarYMostrarDatos();
-  };
-</script>
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed top-0 right-0 p-6 space-y-4 z-50"></div>
 
-
+  <script src="Script.js"></script>
 </body>
 
 </html>
