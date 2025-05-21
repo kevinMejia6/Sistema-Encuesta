@@ -252,29 +252,31 @@
             <!-- Aquí se cargan los registros dinámicamente -->
           </tbody>
         </table>
-        
+
       </div>
       <!-- Paginador de tabla - añadir esto justo después de la tabla -->
-<div id="tablePagination" class="mt-4 px-6 py-3 bg-white border-t flex flex-col sm:flex-row justify-between items-center">
-  <div id="paginationInfo" class="text-sm text-gray-700 mb-2 sm:mb-0">
-    Mostrando 1 - 10 de 100 registros
-  </div>
-  <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0">
-    <div class="flex items-center mr-4">
-      <label for="rowsPerPageSelector" class="mr-2 text-sm text-gray-600">Mostrar</label>
-      <select id="rowsPerPageSelector" onchange="cambiarRegistrosPorPagina(this.value)" class="border rounded p-1 text-sm">
-        <option value="5">5</option>
-        <option value="10" selected>10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-      </select>
-    </div>
-    <div id="paginationControls" class="flex items-center space-x-1">
-      <!-- Aquí se generan dinámicamente los botones de paginación -->
-    </div>
-  </div>
-</div>
+      <div id="tablePagination"
+        class="mt-4 px-6 py-3 bg-white border-t flex flex-col sm:flex-row justify-between items-center">
+        <div id="paginationInfo" class="text-sm text-gray-700 mb-2 sm:mb-0">
+          Mostrando 1 - 10 de 100 registros
+        </div>
+        <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0">
+          <div class="flex items-center mr-4">
+            <label for="rowsPerPageSelector" class="mr-2 text-sm text-gray-600">Mostrar</label>
+            <select id="rowsPerPageSelector" onchange="cambiarRegistrosPorPagina(this.value)"
+              class="border rounded p-1 text-sm">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+          <div id="paginationControls" class="flex items-center space-x-1">
+            <!-- Aquí se generan dinámicamente los botones de paginación -->
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Charts -->
@@ -297,217 +299,268 @@
 
     <!-- Modal de Edición -->
     <!-- Modal de Edición -->
-<div id="editModal"
-  class="fixed inset-0 bg-black/30 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 transition-opacity duration-300 pt-2 pb-4">
-  <div class="relative w-full max-w-4xl mx-auto p-3 sm:p-5 animate-slide-down">
-    <div class="bg-white rounded-xl shadow-2xl overflow-y-auto max-h-[90vh] transition-all duration-300">
-      <!-- Encabezado -->
-      <div class="flex justify-between items-center bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
-        <h3 class="text-lg sm:text-xl font-bold text-gray-900">Editar Evaluación</h3>
-        <button id="closeModal" class="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-          aria-label="Cerrar modal">
-          <svg class="h-5 w-5 sm:h-6 sm:w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+    <div id="editModal"
+      class="fixed inset-0 bg-black/30 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 transition-opacity duration-300 pt-2 pb-4">
+      <div class="relative w-full max-w-4xl mx-auto p-3 sm:p-5 animate-slide-down">
+        <div class="bg-white rounded-xl shadow-2xl overflow-y-auto max-h-[90vh] transition-all duration-300">
+          <!-- Encabezado -->
+          <div
+            class="flex justify-between items-center bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 sticky top-0 z-10">
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900">Editar Evaluación</h3>
+            <button id="closeModal" class="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              aria-label="Cerrar modal" onclick="closeEditModal()">
+              <svg class="h-5 w-5 sm:h-6 sm:w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Formulario -->
+          <form id="editForm" onsubmit="handleEditSubmit(event)" aria-label="Formulario de Edición de Evaluación"
+            class="p-4 sm:p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+
+              <!-- Nombre del Ejecutivo -->
+              <div class="space-y-1">
+                <label for="editNombre" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Nombre del ejecutivo *
+                </label>
+                <input type="text" id="editNombre" name="editNombre" placeholder="Nombre completo" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition-all duration-200">
+              </div>
+
+              <!-- Fecha -->
+              <div class="space-y-1">
+                <label for="editFecha" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Fecha *
+                </label>
+                <input type="date" id="editFecha" name="editFecha" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-700 transition-all duration-200">
+              </div>
+
+              <!-- Sucursal -->
+              <div class="space-y-1">
+                <label for="editSucursal" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Sucursal *
+                </label>
+                <select id="editSucursal" name="editSucursal" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una sucursal --</option>
+                  <option value="Soyapango">Soyapango</option>
+                  <option value="Santa Ana">Santa Ana</option>
+                  <option value="Sonsonate">Sonsonate</option>
+                  <option value="Ahuchapan">Ahuchapan</option>
+                </select>
+              </div>
+
+              <!-- Canal -->
+              <div class="space-y-1">
+                <label for="editCanal" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Canal *
+                </label>
+                <select id="editCanal" name="editCanal" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona un canal --</option>
+                  <option value="PANELES">PANELES</option>
+                  <option value="PROMOTORIA">PROMOTORIA</option>
+                </select>
+              </div>
+
+              <!-- Presencia Ejecutivo -->
+              <div class="space-y-1">
+                <label for="editPresenciaEjecutivo" class="block text-sm font-semibold text-gray-700 mb-1">
+                  ¿Ejecutivo en PDA/ruta? *
+                </label>
+                <select id="editPresenciaEjecutivo" name="editPresenciaEjecutivo" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una opción --</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <!-- Manejo de Oferta -->
+              <div class="space-y-1" id="editManejoOfertaDiv">
+                <label for="editManejoOferta" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Manejo de oferta comercial *
+                </label>
+                <select id="editManejoOferta" name="editManejoOferta" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una opción --</option>
+                  <option value="Excelente">Excelente</option>
+                  <option value="Bueno">Bueno</option>
+                  <option value="Regular">Regular</option>
+                  <option value="Malo">Malo</option>
+                  <option value="No respondió">No respondió</option>
+                </select>
+              </div>
+
+              <!-- Supervisor Conocedor -->
+              <div class="space-y-1" id="editSupervisorConocedorDiv">
+                <label for="editSupervisorConocedor" class="block text-sm font-semibold text-gray-700 mb-1">
+                  ¿Supervisor conoce ausencia? *
+                </label>
+                <select id="editSupervisorConocedor" name="editSupervisorConocedor"
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una opción --</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <!-- Ofreciendo Marca -->
+              <div class="space-y-1" id="editOfreciendoMarcaDiv">
+                <label for="editOfreciendoMarca" class="block text-sm font-semibold text-gray-700 mb-1">
+                  ¿Vendedor ofrecía marca? *
+                </label>
+                <select id="editOfreciendoMarca" name="editOfreciendoMarca" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una opción --</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <!-- Auditor -->
+              <div class="space-y-1">
+                <label for="editAuditor" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Nombre del Auditor *
+                </label>
+                <select id="editAuditor" name="editAuditor" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona un Auditor --</option>
+                  <option value="Carlos Hernandez">Carlos Hernandez</option>
+                  <option value="Flor Gaitan">Flor Gaitan</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="mt-5 sm:mt-6">
+              <label for="editObservaciones" class="block text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                Observaciones
+              </label>
+              <textarea id="editObservaciones" name="editObservaciones"
+                class="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 resize-none min-h-[100px] sm:min-h-[120px] transition-all duration-200"
+                placeholder="Escribe tus observaciones aquí..."></textarea>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div
+              class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+              <button type="button" id="cancelEditBtn" onclick="closeEditModal()"
+                class="px-4 sm:px-5 py-2 sm:py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200 active:bg-gray-300 order-2 sm:order-1">
+                Cancelar
+              </button>
+              <button type="submit"
+                class="px-4 sm:px-5 py-2 sm:py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 active:bg-primary-800 order-1 sm:order-2">
+                Guardar Cambios
+              </button>
+            </div>
+
+            <input type="hidden" id="editRecordId">
+          </form>
+        </div>
       </div>
-
-      <!-- Formulario -->
-      <form id="editForm" onsubmit="handleEditSubmit(event)" aria-label="Formulario de Edición de Evaluación"
-        class="p-4 sm:p-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-
-          <!-- Nombre del Ejecutivo -->
-          <div class="space-y-1">
-            <label for="editNombre" class="block text-sm font-semibold text-gray-700 mb-1">
-              Nombre del ejecutivo *
-            </label>
-            <input type="text" id="editNombre" name="editNombre" placeholder="Nombre completo" required
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition-all duration-200">
-          </div>
-
-          <!-- Fecha -->
-          <div class="space-y-1">
-            <label for="editFecha" class="block text-sm font-semibold text-gray-700 mb-1">
-              Fecha *
-            </label>
-            <input type="date" id="editFecha" name="editFecha" required
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-700 transition-all duration-200">
-          </div>
-
-          <!-- Sucursal -->
-          <div class="space-y-1">
-            <label for="editSucursal" class="block text-sm font-semibold text-gray-700 mb-1">
-              Sucursal *
-            </label>
-            <select id="editSucursal" name="editSucursal" required
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
-              <option value="">-- Selecciona una sucursal --</option>
-              <option value="Soyapango">Soyapango</option>
-              <option value="Santa Ana">Santa Ana</option>
-              <option value="Sonsonate">Sonsonate</option>
-              <option value="Ahuchapan">Ahuchapan</option>
-            </select>
-          </div>
-
-          <!-- Canal -->
-          <div class="space-y-1">
-            <label for="editCanal" class="block text-sm font-semibold text-gray-700 mb-1">
-              Canal *
-            </label>
-            <select id="editCanal" name="editCanal" required
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
-              <option value="">-- Selecciona un canal --</option>
-              <option value="PANELES">PANELES</option>
-              <option value="PROMOTORIA">PROMOTORIA</option>
-            </select>
-          </div>
-
-          <!-- Presencia Ejecutivo -->
-          <div class="space-y-1">
-            <label for="editPresenciaEjecutivo" class="block text-sm font-semibold text-gray-700 mb-1">
-              ¿Ejecutivo en PDA/ruta? *
-            </label>
-            <select id="editPresenciaEjecutivo" name="editPresenciaEjecutivo" required
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
-              <option value="">-- Selecciona una opción --</option>
-              <option value="Sí">Sí</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-
-          <!-- Manejo de Oferta -->
-          <div class="space-y-1" id="editManejoOfertaDiv">
-            <label for="editManejoOferta" class="block text-sm font-semibold text-gray-700 mb-1">
-              Manejo de oferta comercial *
-            </label>
-            <select id="editManejoOferta" name="editManejoOferta" required
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
-              <option value="">-- Selecciona una opción --</option>
-              <option value="Excelente">Excelente</option>
-              <option value="Bueno">Bueno</option>
-              <option value="Regular">Regular</option>
-              <option value="Malo">Malo</option>
-              <option value="No respondió">No respondió</option>
-            </select>
-          </div>
-
-          <!-- Supervisor Conocedor -->
-          <div class="space-y-1" id="editSupervisorConocedorDiv">
-            <label for="editSupervisorConocedor" class="block text-sm font-semibold text-gray-700 mb-1">
-              ¿Supervisor conoce ausencia? *
-            </label>
-            <select id="editSupervisorConocedor" name="editSupervisorConocedor"
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
-              <option value="">-- Selecciona una opción --</option>
-              <option value="Sí">Sí</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-
-          <!-- Ofreciendo Marca -->
-          <div class="space-y-1" id="editOfreciendoMarcaDiv">
-            <label for="editOfreciendoMarca" class="block text-sm font-semibold text-gray-700 mb-1">
-              ¿Vendedor ofrecía marca? *
-            </label>
-            <select id="editOfreciendoMarca" name="editOfreciendoMarca" required
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
-              <option value="">-- Selecciona una opción --</option>
-              <option value="Sí">Sí</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-
-          <!-- Auditor -->
-          <div class="space-y-1">
-            <label for="editAuditor" class="block text-sm font-semibold text-gray-700 mb-1">
-              Nombre del Auditor *
-            </label>
-            <select id="editAuditor" name="editAuditor" required
-              class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
-              <option value="">-- Selecciona un Auditor --</option>
-              <option value="Carlos Hernandez">Carlos Hernandez</option>
-              <option value="Flor Gaitan">Flor Gaitan</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Observaciones -->
-        <div class="mt-5 sm:mt-6">
-          <label for="editObservaciones" class="block text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
-            Observaciones
-          </label>
-          <textarea id="editObservaciones" name="editObservaciones"
-            class="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 resize-none min-h-[100px] sm:min-h-[120px] transition-all duration-200"
-            placeholder="Escribe tus observaciones aquí..."></textarea>
-        </div>
-
-        <!-- Botones de Acción -->
-        <div class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
-          <button type="button" id="cancelEditBtn"
-            class="px-4 sm:px-5 py-2 sm:py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200 active:bg-gray-300 order-2 sm:order-1">
-            Cancelar
-          </button>
-          <button type="submit"
-            class="px-4 sm:px-5 py-2 sm:py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 active:bg-primary-800 order-1 sm:order-2">
-            Guardar Cambios
-          </button>
-        </div>
-
-        <input type="hidden" id="editRecordId">
-      </form>
     </div>
-  </div>
-</div>
 
-<style>
-  @keyframes slide-down {
-    from {
-      transform: translateY(-20px);
-      opacity: 0;
-    }
+    <style>
+      @keyframes slide-down {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
 
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
 
-  .animate-slide-down {
-    animation: slide-down 0.3s ease-out;
-  }
+      .animate-slide-down {
+        animation: slide-down 0.3s ease-out;
+      }
 
-  select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M15.3 9.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.4l3.3 3.29 3.3-3.3z'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 1.5em;
-  }
+      select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M15.3 9.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.4l3.3 3.29 3.3-3.3z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1.5em;
+      }
 
-  /* Media query for smaller screens */
-  @media (max-width: 640px) {
-    .fixed.inset-0 {
-      padding: 0 8px;
-    }
-    
-    /* Ajustes para móviles */
-    #editModal {
-      display: block;
-      padding-top: 0.5rem;
-      padding-bottom: 1.5rem;
-    }
-    
-    /* Altura máxima para formulario en móvil */
-    form {
-      padding-bottom: 2rem;
-    }
-  }
-  
-  /* Mostrar el modal correctamente */
-  #editModal:not(.hidden) {
-    display: block;
-  }
-</style>
+      /* Media query for smaller screens */
+      @media (max-width: 640px) {
+        .fixed.inset-0 {
+          padding: 0 8px;
+        }
+
+        /* Ajustes para móviles */
+        #editModal {
+          display: block;
+          padding-top: 0.5rem;
+          padding-bottom: 1.5rem;
+        }
+
+        /* Altura máxima para formulario en móvil */
+        form {
+          padding-bottom: 2rem;
+        }
+      }
+
+      /* Mostrar el modal correctamente - solo cuando sea visible */
+      #editModal:not(.hidden) {
+        display: block;
+      }
+
+      /* Asegurar que el modal esté oculto por defecto */
+      #editModal.hidden {
+        display: none !important;
+      }
+    </style>
+
+    <!-- Script para manejar el modal -->
+    <script>
+      // Función para cerrar el modal
+      function closeEditModal() {
+        const modal = document.getElementById('editModal');
+        if (modal) {
+          modal.classList.add('hidden');
+          document.body.style.overflow = 'auto'; // Restaurar scroll del body
+        }
+      }
+
+      // Función para abrir el modal
+      function openEditModal() {
+        const modal = document.getElementById('editModal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+        }
+      }
+
+      // Asegurar que el modal está oculto al cargar la página
+      document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('editModal');
+        if (modal) {
+          modal.classList.add('hidden');
+        }
+
+        // Configurar los eventos de los botones
+        const closeButtons = document.querySelectorAll('#closeModal, #cancelEditBtn');
+        closeButtons.forEach(button => {
+          button.addEventListener('click', closeEditModal);
+        });
+      });
+
+      // Manejar el envío del formulario
+      function handleEditSubmit(event) {
+        event.preventDefault();
+        // Aquí va tu código para procesar el formulario
+
+        // Cerrar el modal después de enviar
+        closeEditModal();
+      }
+    </script>
 
     <!-- Footer -->
     <footer class="text-center text-gray-500 text-sm py-8">
@@ -519,11 +572,11 @@
 
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed top-0 right-0 p-6 space-y-4 z-50"></div>
- 
+
   <script type="module" src="firebase-config.js"></script>
 
   <script type="module" src="Script.js"></script>
-  
+
 </body>
 
 </html>
