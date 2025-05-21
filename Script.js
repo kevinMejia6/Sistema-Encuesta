@@ -1,3 +1,4 @@
+// Import db instead of analytics for Firestore operations
 import { db } from './firebase-config.js';
 import {
     collection,
@@ -11,7 +12,7 @@ import {
     where,
     serverTimestamp,
     orderBy
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/11.8.0/firebase-firestore.js";
 
 tailwind.config = {
     theme: {
@@ -47,7 +48,9 @@ tailwind.config = {
     },
 }
 
+// Use db instead of analytics for Firestore collection
 const evaluacionesRef = collection(db, 'evaluaciones');
+
 
 if (evaluacionesRef) {
     console.log('Colección de evaluaciones conectada correctamente');
@@ -627,19 +630,27 @@ function cambiarRegistrosPorPagina(newValue) {
 
 // Añadir el control de registros por página y el cambio de página a las funciones globales
 window.cambiarRegistrosPorPagina = cambiarRegistrosPorPagina;
-// Escape HTML para evitar XSS en la tabla
-function escapeHtml(text) {
-    if (!text) return '';
-    return text.replace(/[&<>"']/g, function (m) {
-        return ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        })[m];
-    });
-}
+    // Escape HTML para evitar XSS en la tabla
+    function escapeHtml(text) {
+        // Verificar si el texto es null, undefined o no es string
+        if (text == null || text === undefined) {
+            return '';
+        }
+        
+        // Convertir a string si no lo es
+        const str = String(text);
+        
+        // Aplicar el escape de caracteres HTML
+        return str.replace(/[&<>"']/g, function (m) {
+            return ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[m];
+        });
+    }
 
 // Manejo de filtros
 document.getElementById('btnFiltrar').addEventListener('click', e => {
