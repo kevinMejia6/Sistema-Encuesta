@@ -1,19 +1,27 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-// Configuración de Firebase
+// firebase-config.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-analytics.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-firestore.js";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCXHzK22QMOBusCterW4VwPj1ItF_ME7g4",
-  authDomain: "prueba-vupioh.firebaseapp.com",
-  projectId: "prueba-vupioh",
-  storageBucket: "prueba-vupioh.appspot.com",
-  messagingSenderId: "1022149703484",
-  appId: "1:1022149703484:web:c73ef30d04ae7afdb8d039",
-  measurementId: "G-FMDC0D1S0H"
+  apiKey: "AIzaSyCrHG1k9Wa_S2JdlIcZowMWof-5ShxHvNY",
+  authDomain: "encuentas-como.firebaseapp.com",
+  projectId: "encuentas-como",
+  storageBucket: "encuentas-como.firebasestorage.app",
+  messagingSenderId: "1091819567760",
+  appId: "1:1091819567760:web:8db7dfa15eb165ebd03615",
+  measurementId: "G-6EPGF4GY1J"
 };
 
-// Inicializar Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-export { db };
+// Initialize Analytics
+export const analytics = getAnalytics(app);
+
+// Initialize Firestore
+export const db = getFirestore(app);
+
+// Test Firestore connection
+console.log('Firebase initialized successfully');
