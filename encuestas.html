@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,42 +9,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              200: '#bfdbfe',
-              300: '#93c5fd',
-              400: '#60a5fa',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              800: '#1e40af',
-              900: '#1e3a8a',
-            },
-            secondary: {
-              50: '#f8fafc',
-              400: '#94a3b8',
-              500: '#64748b',
-              600: '#475569',
-              700: '#334155',
-              800: '#1e293b',
-              900: '#0f172a',
-            },
-          },
-          boxShadow: {
-            card: '0 0 25px 0 rgba(0, 0, 0, 0.05)',
-            input: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-          },
-        },
-      },
-    }
-  </script>
+  <!-- <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script> -->
+
 </head>
+
 <body class="bg-slate-50 text-gray-800 min-h-screen">
   <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     <!-- Header -->
@@ -65,38 +35,22 @@
             <label for="nombre" class="block text-sm font-medium text-gray-700">
               Nombre del ejecutivo *
             </label>
-            <input 
-              type="text" 
-              id="nombre" 
-              name="nombre" 
-              placeholder="Nombre completo" 
-              required 
-              autocomplete="off"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            />
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required autocomplete="off"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
           <div class="space-y-2">
             <label for="fecha" class="block text-sm font-medium text-gray-700">
               Fecha *
             </label>
-            <input 
-              type="date" 
-              id="fecha" 
-              name="fecha" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
-            />
+            <input type="date" id="fecha" name="fecha" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
           <div class="space-y-2">
             <label for="sucursal" class="block text-sm font-medium text-gray-700">
               Sucursal *
             </label>
-            <select 
-              id="sucursal" 
-              name="sucursal" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="sucursal" name="sucursal" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona una sucursal --</option>
               <option value="Soyapango">Soyapango</option>
               <option value="Santa Ana">Santa Ana</option>
@@ -108,30 +62,37 @@
             <label for="canal" class="block text-sm font-medium text-gray-700">
               Canal *
             </label>
-            <select 
-              id="canal" 
-              name="canal" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="canal" name="canal" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona un canal --</option>
               <option value="PANELES">PANELES</option>
               <option value="PROMOTORIA">PROMOTORIA</option>
             </select>
           </div>
+
+
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+
+          <div class="space-y-2">
+            <label for="presenciaEjecutivo" class="block text-sm font-medium text-gray-700">
+              ¿Se encontró al ejecutivo en PDA o en ruta? *
+            </label>
+            <select id="presenciaEjecutivo" name="presenciaEjecutivo" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
+              <option value="">-- Selecciona una opción --</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
           <div class="space-y-2">
             <label for="manejoOferta" class="block text-sm font-medium text-gray-700">
               Manejo de oferta comercial *
             </label>
-            <select 
-              id="manejoOferta" 
-              name="manejoOferta" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="manejoOferta" name="manejoOferta" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona una opción --</option>
               <option value="Excelente">Excelente</option>
               <option value="Bueno">Bueno</option>
@@ -140,31 +101,27 @@
               <option value="No respondió">No respondió</option>
             </select>
           </div>
-          <div class="space-y-2">
-            <label for="presenciaEjecutivo" class="block text-sm font-medium text-gray-700">
-              ¿Se encontró al ejecutivo en PDA o en ruta? *
+
+
+          <div id="supervisorConocedorDiv" class="space-y-2 hidden ">
+            <label for="supervisorConocedor" class="block text-sm font-medium text-gray-700">
+              ¿El supervisor es conocedor de la ausencia? *
             </label>
-            <select 
-              id="presenciaEjecutivo" 
-              name="presenciaEjecutivo" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="supervisorConocedor" name="supervisorConocedor" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona una opción --</option>
               <option value="Sí">Sí</option>
               <option value="No">No</option>
             </select>
           </div>
+
+
           <div class="space-y-2">
             <label for="ofreciendoMarca" class="block text-sm font-medium text-gray-700">
               ¿El vendedor estaba ofreciendo la marca? *
             </label>
-            <select 
-              id="ofreciendoMarca" 
-              name="ofreciendoMarca" 
-              required
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="ofreciendoMarca" name="ofreciendoMarca" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="">-- Selecciona una opción --</option>
               <option value="Sí">Sí</option>
               <option value="No">No</option>
@@ -176,20 +133,25 @@
           <label for="observaciones" class="block text-sm font-medium text-gray-700">
             Observaciones
           </label>
-          <textarea 
-            id="observaciones" 
-            name="observaciones" 
-            placeholder="Escribe tus observaciones aquí..."
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm h-24"
-          ></textarea>
+          <textarea id="observaciones" name="observaciones" placeholder="Escribe tus observaciones aquí..."
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm h-24"></textarea>
+        </div>
+
+        <div class="space-y-2">
+          <label for="auditor" class="block text-sm font-medium text-gray-700">
+            Nombre del Auditor *
+          </label>
+          <select id="auditor" name="auditor" required
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
+            <option value="">-- Selecciona un Auditor --</option>
+            <option value="Carlos Hernandez">Carlos Hernandez</option>
+            <option value="Flor Gaitan">Flor Gaitan</option>
+          </select>
         </div>
 
         <div class="mt-8">
-          <button 
-            type="submit" 
-            aria-label="Enviar Evaluación"
-            class="w-full bg-primary-600 px-4 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out"
-          >
+          <button type="submit" aria-label="Enviar Evaluación"
+            class="w-full bg-primary-600 px-4 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out">
             Enviar Evaluación
           </button>
         </div>
@@ -207,30 +169,22 @@
             <label for="filterFechaDesde" class="block text-sm font-medium text-gray-700">
               Fecha desde:
             </label>
-            <input 
-              type="date" 
-              id="filterFechaDesde"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
-            />
+            <input type="date" id="filterFechaDesde"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
           <div class="space-y-2">
             <label for="filterFechaHasta" class="block text-sm font-medium text-gray-700">
               Fecha hasta:
             </label>
-            <input 
-              type="date" 
-              id="filterFechaHasta"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
-            />
+            <input type="date" id="filterFechaHasta"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
           <div class="space-y-2">
             <label for="filterSucursal" class="block text-sm font-medium text-gray-700">
               Sucursal:
             </label>
-            <select 
-              id="filterSucursal"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="filterSucursal"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="all">Todos</option>
               <option value="Soyapango">Soyapango</option>
               <option value="Santa Ana">Santa Ana</option>
@@ -242,10 +196,8 @@
             <label for="filterCanal" class="block text-sm font-medium text-gray-700">
               Canal:
             </label>
-            <select 
-              id="filterCanal"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm"
-            >
+            <select id="filterCanal"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm">
               <option value="all">Todos</option>
               <option value="PANELES">PANELES</option>
               <option value="PROMOTORIA">PROMOTORIA</option>
@@ -255,30 +207,17 @@
             <label for="filterNombre" class="block text-sm font-medium text-gray-700">
               Nombre del ejecutivo:
             </label>
-            <input 
-              type="text" 
-              id="filterNombre" 
-              placeholder="Filtrar por nombre" 
-              autocomplete="off"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" 
-            />
+            <input type="text" id="filterNombre" placeholder="Filtrar por nombre" autocomplete="off"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-4 py-2.5 border text-sm" />
           </div>
         </div>
         <div class="flex flex-wrap gap-4 mt-6">
-          <button 
-            id="btnFiltrar" 
-            aria-label="Aplicar filtros" 
-            type="button"
-            class="flex-1 sm:flex-none bg-primary-600 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out"
-          >
+          <button id="btnFiltrar" aria-label="Aplicar filtros" type="button"
+            class="flex-1 sm:flex-none bg-primary-600 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out">
             Aplicar filtros
           </button>
-          <button 
-            id="btnLimpiar" 
-            aria-label="Limpiar filtros" 
-            type="button"
-            class="flex-1 sm:flex-none bg-gray-500 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out"
-          >
+          <button id="btnLimpiar" aria-label="Limpiar filtros" type="button"
+            class="flex-1 sm:flex-none bg-gray-500 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
             Limpiar filtros
           </button>
         </div>
@@ -291,7 +230,8 @@
         <h2 class="text-xl font-semibold text-gray-800">Registros de Evaluaciones</h2>
       </div>
       <div class="overflow-x-auto">
-        <table aria-label="Tabla con registros de evaluaciones" id="tablaEvaluaciones" role="grid" class="min-w-full divide-y divide-gray-200">
+        <table aria-label="Tabla con registros de evaluaciones" id="tablaEvaluaciones" role="grid"
+          class="min-w-full divide-y divide-gray-200">
           <thead class="bg-primary-600 text-white">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nombre</th>
@@ -301,13 +241,41 @@
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Manejo Oferta</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Presencia Ejecutivo</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ofreciendo Marca</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Supervisor Conocedor</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Observaciones</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Auditor</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Acciones</th>
+
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <!-- Aquí se cargan los registros dinámicamente -->
           </tbody>
         </table>
+
+      </div>
+      <!-- Paginador de tabla - añadir esto justo después de la tabla -->
+      <div id="tablePagination"
+        class="mt-4 px-6 py-3 bg-white border-t flex flex-col sm:flex-row justify-between items-center">
+        <div id="paginationInfo" class="text-sm text-gray-700 mb-2 sm:mb-0">
+          Mostrando 1 - 10 de 100 registros
+        </div>
+        <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0">
+          <div class="flex items-center mr-4">
+            <label for="rowsPerPageSelector" class="mr-2 text-sm text-gray-600">Mostrar</label>
+            <select id="rowsPerPageSelector" onchange="cambiarRegistrosPorPagina(this.value)"
+              class="border rounded p-1 text-sm">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+          <div id="paginationControls" class="flex items-center space-x-1">
+            <!-- Aquí se generan dinámicamente los botones de paginación -->
+          </div>
+        </div>
       </div>
     </div>
 
@@ -327,266 +295,288 @@
       </div>
     </div>
 
+
+
+    <!-- Modal de Edición -->
+    <!-- Modal de Edición -->
+    <div id="editModal"
+      class="fixed inset-0 bg-black/30 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 transition-opacity duration-300 pt-2 pb-4">
+      <div class="relative w-full max-w-4xl mx-auto p-3 sm:p-5 animate-slide-down">
+        <div class="bg-white rounded-xl shadow-2xl overflow-y-auto max-h-[90vh] transition-all duration-300">
+          <!-- Encabezado -->
+          <div
+            class="flex justify-between items-center bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 sticky top-0 z-10">
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900">Editar Evaluación</h3>
+            <button id="closeModal" class="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              aria-label="Cerrar modal" onclick="closeEditModal()">
+              <svg class="h-5 w-5 sm:h-6 sm:w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Formulario -->
+          <form id="editForm" onsubmit="handleEditSubmit(event)" aria-label="Formulario de Edición de Evaluación"
+            class="p-4 sm:p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+
+              <!-- Nombre del Ejecutivo -->
+              <div class="space-y-1">
+                <label for="editNombre" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Nombre del ejecutivo *
+                </label>
+                <input type="text" id="editNombre" name="editNombre" placeholder="Nombre completo" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 transition-all duration-200">
+              </div>
+
+              <!-- Fecha -->
+              <div class="space-y-1">
+                <label for="editFecha" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Fecha *
+                </label>
+                <input type="date" id="editFecha" name="editFecha" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-700 transition-all duration-200">
+              </div>
+
+              <!-- Sucursal -->
+              <div class="space-y-1">
+                <label for="editSucursal" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Sucursal *
+                </label>
+                <select id="editSucursal" name="editSucursal" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una sucursal --</option>
+                  <option value="Soyapango">Soyapango</option>
+                  <option value="Santa Ana">Santa Ana</option>
+                  <option value="Sonsonate">Sonsonate</option>
+                  <option value="Ahuchapan">Ahuchapan</option>
+                </select>
+              </div>
+
+              <!-- Canal -->
+              <div class="space-y-1">
+                <label for="editCanal" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Canal *
+                </label>
+                <select id="editCanal" name="editCanal" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona un canal --</option>
+                  <option value="PANELES">PANELES</option>
+                  <option value="PROMOTORIA">PROMOTORIA</option>
+                </select>
+              </div>
+
+              <!-- Presencia Ejecutivo -->
+              <div class="space-y-1">
+                <label for="editPresenciaEjecutivo" class="block text-sm font-semibold text-gray-700 mb-1">
+                  ¿Ejecutivo en PDA/ruta? *
+                </label>
+                <select id="editPresenciaEjecutivo" name="editPresenciaEjecutivo" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una opción --</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <!-- Manejo de Oferta -->
+              <div class="space-y-1" id="editManejoOfertaDiv">
+                <label for="editManejoOferta" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Manejo de oferta comercial *
+                </label>
+                <select id="editManejoOferta" name="editManejoOferta" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una opción --</option>
+                  <option value="Excelente">Excelente</option>
+                  <option value="Bueno">Bueno</option>
+                  <option value="Regular">Regular</option>
+                  <option value="Malo">Malo</option>
+                  <option value="No respondió">No respondió</option>
+                </select>
+              </div>
+
+              <!-- Supervisor Conocedor -->
+              <div class="space-y-1" id="editSupervisorConocedorDiv">
+                <label for="editSupervisorConocedor" class="block text-sm font-semibold text-gray-700 mb-1">
+                  ¿Supervisor conoce ausencia? *
+                </label>
+                <select id="editSupervisorConocedor" name="editSupervisorConocedor"
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una opción --</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <!-- Ofreciendo Marca -->
+              <div class="space-y-1" id="editOfreciendoMarcaDiv">
+                <label for="editOfreciendoMarca" class="block text-sm font-semibold text-gray-700 mb-1">
+                  ¿Vendedor ofrecía marca? *
+                </label>
+                <select id="editOfreciendoMarca" name="editOfreciendoMarca" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona una opción --</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <!-- Auditor -->
+              <div class="space-y-1">
+                <label for="editAuditor" class="block text-sm font-semibold text-gray-700 mb-1">
+                  Nombre del Auditor *
+                </label>
+                <select id="editAuditor" name="editAuditor" required
+                  class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-select-arrow bg-no-repeat bg-right-4 bg-[length:20px] sm:bg-[length:24px] transition-all duration-200">
+                  <option value="">-- Selecciona un Auditor --</option>
+                  <option value="Carlos Hernandez">Carlos Hernandez</option>
+                  <option value="Flor Gaitan">Flor Gaitan</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="mt-5 sm:mt-6">
+              <label for="editObservaciones" class="block text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                Observaciones
+              </label>
+              <textarea id="editObservaciones" name="editObservaciones"
+                class="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 resize-none min-h-[100px] sm:min-h-[120px] transition-all duration-200"
+                placeholder="Escribe tus observaciones aquí..."></textarea>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div
+              class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+              <button type="button" id="cancelEditBtn" onclick="closeEditModal()"
+                class="px-4 sm:px-5 py-2 sm:py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200 active:bg-gray-300 order-2 sm:order-1">
+                Cancelar
+              </button>
+              <button type="submit"
+                class="px-4 sm:px-5 py-2 sm:py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 active:bg-primary-800 order-1 sm:order-2">
+                Guardar Cambios
+              </button>
+            </div>
+
+            <input type="hidden" id="editRecordId">
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      @keyframes slide-down {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .animate-slide-down {
+        animation: slide-down 0.3s ease-out;
+      }
+
+      select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M15.3 9.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.4l3.3 3.29 3.3-3.3z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1.5em;
+      }
+
+      /* Media query for smaller screens */
+      @media (max-width: 640px) {
+        .fixed.inset-0 {
+          padding: 0 8px;
+        }
+
+        /* Ajustes para móviles */
+        #editModal {
+          display: block;
+          padding-top: 0.5rem;
+          padding-bottom: 1.5rem;
+        }
+
+        /* Altura máxima para formulario en móvil */
+        form {
+          padding-bottom: 2rem;
+        }
+      }
+
+      /* Mostrar el modal correctamente - solo cuando sea visible */
+      #editModal:not(.hidden) {
+        display: block;
+      }
+
+      /* Asegurar que el modal esté oculto por defecto */
+      #editModal.hidden {
+        display: none !important;
+      }
+    </style>
+
+    <!-- Script para manejar el modal -->
+    <script>
+      // Función para cerrar el modal
+      function closeEditModal() {
+        const modal = document.getElementById('editModal');
+        if (modal) {
+          modal.classList.add('hidden');
+          document.body.style.overflow = 'auto'; // Restaurar scroll del body
+        }
+      }
+
+      // Función para abrir el modal
+      function openEditModal() {
+        const modal = document.getElementById('editModal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+        }
+      }
+
+      // Asegurar que el modal está oculto al cargar la página
+      document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('editModal');
+        if (modal) {
+          modal.classList.add('hidden');
+        }
+
+        // Configurar los eventos de los botones
+        const closeButtons = document.querySelectorAll('#closeModal, #cancelEditBtn');
+        closeButtons.forEach(button => {
+          button.addEventListener('click', closeEditModal);
+        });
+      });
+
+      // Manejar el envío del formulario
+      function handleEditSubmit(event) {
+        event.preventDefault();
+        // Aquí va tu código para procesar el formulario
+
+        // Cerrar el modal después de enviar
+        closeEditModal();
+      }
+    </script>
+
     <!-- Footer -->
     <footer class="text-center text-gray-500 text-sm py-8">
       &copy; 2024 Evaluación de Ejecutivos de Ventas
     </footer>
   </div>
 
-  <script>
-    // Variables globales para charts
-    let chartManejoOferta = null;
-    let chartPresenciaEjecutivo = null;
 
-    // LocalStorage key
-    const LOCAL_STORAGE_KEY = 'evaluacionesLocal';
 
-    // Función para obtener evaluaciones desde localStorage
-    function getEvaluacionesStorage() {
-      const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
-    }
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-0 right-0 p-6 space-y-4 z-50"></div>
 
-    // Función para guardar una evaluación nueva en localStorage
-    function saveEvaluacionStorage(evaluacion) {
-      const evaluaciones = getEvaluacionesStorage();
-      evaluaciones.push(evaluacion);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(evaluaciones));
-    }
+  <script type="module" src="firebase-config.js"></script>
 
-    // Manejo del formulario
-    const form = document.getElementById('evaluationForm');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
+  <script type="module" src="Script.js"></script>
 
-      const data = {
-        nombre: form.nombre.value.trim(),
-        fecha: form.fecha.value,
-        sucursal: form.sucursal.value,
-        canal: form.canal.value,
-        manejoOferta: form.manejoOferta.value,
-        presenciaEjecutivo: form.presenciaEjecutivo.value,
-        ofreciendoMarca: form.ofreciendoMarca.value,
-        observaciones: form.observaciones.value.trim(),
-        createdAt: new Date().toISOString()
-      };
-
-      saveEvaluacionStorage(data);
-      alert('Evaluación guardada exitosamente!');
-      form.reset();
-      cargarYMostrarDatos();
-    });
-
-    // Cargar datos con filtros y mostrar gráfica y tabla
-    function cargarYMostrarDatos() {
-      const fechaDesde = document.getElementById('filterFechaDesde').value;
-      const fechaHasta = document.getElementById('filterFechaHasta').value;
-      const sucursalFiltro = document.getElementById('filterSucursal').value;
-      const canalFiltro = document.getElementById('filterCanal').value;
-      const nombreFiltro = document.getElementById('filterNombre').value.trim().toLowerCase();
-
-      let docs = getEvaluacionesStorage();
-
-      if (fechaDesde) {
-        docs = docs.filter(d => d.fecha >= fechaDesde);
-      }
-      if (fechaHasta) {
-        docs = docs.filter(d => d.fecha <= fechaHasta);
-      }
-      if (sucursalFiltro !== 'all') {
-        docs = docs.filter(d => d.sucursal === sucursalFiltro);
-      }
-      if (canalFiltro !== 'all') {
-        docs = docs.filter(d => d.canal === canalFiltro);
-      }
-      if (nombreFiltro.length > 0) {
-        docs = docs.filter(d => d.nombre.toLowerCase().includes(nombreFiltro));
-      }
-
-      mostrarGraficas(docs);
-      mostrarTabla(docs);
-    }
-
-    // Mostrar gráfica con Chart.js - Mejoradas y más atractivas
-    function mostrarGraficas(docs) {
-      const manejoOptions = ['Excelente', 'Bueno', 'Regular', 'Malo', 'No respondió'];
-      const manejoCounts = manejoOptions.map(opt => docs.filter(d => d.manejoOferta === opt).length);
-
-      const presenciaOptions = ['Sí', 'No'];
-      const presenciaCounts = presenciaOptions.map(opt => docs.filter(d => d.presenciaEjecutivo === opt).length);
-
-      // Gráfico Manejo Oferta Comercial (Tipo Doughnut con colores vibrantes y sombra)
-      const ctxManejo = document.getElementById('chartManejoOferta').getContext('2d');
-      if(chartManejoOferta) chartManejoOferta.destroy();
-      chartManejoOferta = new Chart(ctxManejo, {
-        type: 'doughnut',
-        data: {
-          labels: manejoOptions,
-          datasets: [{
-            label: 'Manejo de Oferta Comercial',
-            data: manejoCounts,
-            backgroundColor: [
-              'rgba(16, 185, 129, 0.85)', // Excelente - verde
-              'rgba(59, 130, 246, 0.85)', // Bueno - azul
-              'rgba(250, 204, 21, 0.85)', // Regular - amarillo
-              'rgba(239, 68, 68, 0.85)',  // Malo - rojo
-              'rgba(156, 163, 175, 0.85)' // No respondió - gris
-            ],
-            borderColor: 'rgba(255, 255, 255, 0.8)',
-            borderWidth: 2,
-            hoverOffset: 30
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '60%',
-          plugins: {
-            legend: {
-              position: 'right',
-              labels: {
-                font: {size: 14, weight: '600'},
-                color: '#334155'
-              }
-            },
-            tooltip: {
-              enabled: true,
-              callbacks: {
-                label: context => `${context.label}: ${context.parsed} (${((context.parsed / docs.length) * 100).toFixed(1)}%)`
-              }
-            }
-          },
-          animation: {
-            animateRotate: true,
-            animateScale: true
-          }
-        }
-      });
-
-      // Gráfico Presencia Ejecutivo (Horizontal Bar con colores vivos)
-      const ctxPresencia = document.getElementById('chartPresenciaEjecutivo').getContext('2d');
-      if(chartPresenciaEjecutivo) chartPresenciaEjecutivo.destroy();
-      chartPresenciaEjecutivo = new Chart(ctxPresencia, {
-        type: 'bar',
-        data: {
-          labels: presenciaOptions,
-          datasets: [{
-            label: 'Presencia del Ejecutivo',
-            data: presenciaCounts,
-            backgroundColor: [
-              'rgba(16, 185, 129, 0.85)', // Sí verde
-              'rgba(239, 68, 68, 0.85)'   // No rojo
-            ],
-            borderColor: [
-              'rgba(5, 150, 105, 1)',
-              'rgba(220, 38, 38, 1)'
-            ],
-            borderWidth: 2,
-            borderRadius: 6,
-            maxBarThickness: 60
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              beginAtZero: true,
-              ticks: { stepSize: 1, font: {size: 13, weight: '600'} },
-              grid: { display: false }
-            },
-            y: {
-              ticks: { font: {size: 14, weight: '700'} },
-              grid: { display: false }
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              enabled: true,
-              callbacks: {
-                label: ctx => `${ctx.label}: ${ctx.parsed.x} (${((ctx.parsed.x / docs.length) * 100).toFixed(1)}%)`
-              }
-            }
-          },
-          animation: {
-            duration: 1000,
-            easing: 'easeOutQuart'
-          }
-        }
-      });
-    }
-
-    // Mostrar tabla con registros
-    function mostrarTabla(docs) {
-      const tbody = document.querySelector('#tablaEvaluaciones tbody');
-      tbody.innerHTML = '';
-      if(docs.length === 0){
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 8;
-        td.classList.add('px-6', 'py-4', 'text-center', 'text-sm', 'text-gray-500');
-        td.textContent = 'No hay registros que mostrar.';
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-        return;
-      }
-      docs.forEach(d => {
-        const tr = document.createElement('tr');
-        tr.classList.add('hover:bg-gray-50');
-        tr.innerHTML = `
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.nombre)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca)}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Escape HTML para evitar XSS en la tabla
-    function escapeHtml(text) {
-      if(!text) return '';
-      return text.replace(/[&<>"']/g, function(m) {
-        return ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        })[m];
-      });
-    }
-
-    // Event listeners filtros
-    document.getElementById('btnFiltrar').addEventListener('click', e => {
-      e.preventDefault();
-      cargarYMostrarDatos();
-    });
-
-    document.getElementById('btnLimpiar').addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('filterFechaDesde').value = '';
-      document.getElementById('filterFechaHasta').value = '';
-      document.getElementById('filterSucursal').value = 'all';
-      document.getElementById('filterCanal').value = 'all';
-      document.getElementById('filterNombre').value = '';
-      cargarYMostrarDatos();
-    });
-
-    // Inicializar fecha actual en formulario y cargar datos
-    window.onload = () => {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('fecha').value = today;
-      cargarYMostrarDatos();
-    };
-  </script>
 </body>
+
 </html>
