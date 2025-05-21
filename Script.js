@@ -1,3 +1,17 @@
+import { db } from './firebase-config.js';
+import {
+    collection,
+    addDoc,
+    doc,
+    getDoc,
+    getDocs,
+    updateDoc,
+    deleteDoc,
+    query,
+    where,
+    serverTimestamp,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 tailwind.config = {
     theme: {
@@ -32,23 +46,14 @@ tailwind.config = {
         },
     },
 }
-// Configuración de Firebase PARA TENER PERMISOS A LA CONEXION
-const firebaseConfig = {
-    apiKey: "AIzaSyCXHzK22QMOBusCterW4VwPj1ItF_ME7g4",
-    authDomain: "prueba-vupioh.firebaseapp.com",
-    projectId: "prueba-vupioh",
-    storageBucket: "prueba-vupioh.firebasestorage.app",
-    messagingSenderId: "1022149703484",
-    appId: "1:1022149703484:web:c73ef30d04ae7afdb8d039",
-    measurementId: "G-FMDC0D1S0H"
-};
 
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
+const evaluacionesRef = collection(db, 'evaluaciones');
 
-// Referencia a Firestore
-const db = firebase.firestore();
-const evaluacionesRef = db.collection('evaluaciones');
+if (evaluacionesRef) {
+    console.log('Colección de evaluaciones conectada correctamente');
+} else {
+    console.log('Error al conectar con la colección');
+}
 
 // Variables globales para charts
 let chartManejoOferta = null;
@@ -66,8 +71,7 @@ presenciaEjecutivoSelect.addEventListener('change', function () {
         manejoOfertaDiv.style.display = 'none';
         ofreciendoMarcaDiv.style.display = 'none';
         supervisorConocedorDiv.classList.remove('hidden');
-        supervisorConocedor.value = ''; // 👈 Asigna el valor aquí
-
+        document.getElementById('supervisorConocedor').value = '';
 
         // Quitar el atributo required
         document.getElementById('manejoOferta').removeAttribute('required');
@@ -77,7 +81,7 @@ presenciaEjecutivoSelect.addEventListener('change', function () {
         manejoOfertaDiv.style.display = 'block';
         ofreciendoMarcaDiv.style.display = 'block';
 
-        // Agregar nuevamente el atributo required si es necesario
+        // Agregar nuevamente el atributo required
         document.getElementById('manejoOferta').setAttribute('required', 'required');
         document.getElementById('ofreciendoMarca').setAttribute('required', 'required');
 
@@ -86,21 +90,19 @@ presenciaEjecutivoSelect.addEventListener('change', function () {
     }
 });
 
-
-// ========================== TOOD ESTO ES PARA EDITAR =================================== 
+// ========================== FUNCIONES PARA EDITAR ===========================
 
 // Manejadores para cerrar el modal de edición
- document.getElementById('closeModal').addEventListener('click', () => {
+document.getElementById('closeModal').addEventListener('click', () => {
     document.getElementById('editModal').classList.add('hidden');
- });
+});
 
-//  FUNCION PARA CERRAR EL MODAL
-
- document.getElementById('cancelEditBtn').addEventListener('click', () => {
+// Función para cerrar el modal
+document.getElementById('cancelEditBtn').addEventListener('click', () => {
     document.getElementById('editModal').classList.add('hidden');
- });
+});
 
-// Control de visibilidad para los campos condicionales en el formulario de edición
+// Control de visibilidad para campos condicionales en formulario de edición
 document.getElementById('editPresenciaEjecutivo').addEventListener('change', function () {
     const editManejoOfertaDiv = document.getElementById('editManejoOfertaDiv');
     const editOfreciendoMarcaDiv = document.getElementById('editOfreciendoMarcaDiv');
@@ -129,29 +131,29 @@ document.getElementById('editPresenciaEjecutivo').addEventListener('change', fun
     }
 });
 
+// Función para abrir modal de edición y cargar datos
+window.abrirModalEdicion = async function (id) {
+    try {
+        const docRef = doc(db, 'evaluaciones', id);
+        const docSnap = await getDoc(docRef);
 
-// TRBAJANDO EN ESTE EDITAR 
+        if (docSnap.exists()) {
+            const data = docSnap.data();
 
-// Función al hacer clic en "Editar": Abre modal y carga datos
-function abrirModalEdicion(id) {
-    evaluacionesRef.doc(id).get().then(doc => {
-        if (doc.exists) {
-            const data = doc.data();
             // Llenar campos del formulario
             document.getElementById('editNombre').value = data.nombre;
             document.getElementById('editFecha').value = data.fecha;
             document.getElementById('editSucursal').value = data.sucursal;
             document.getElementById('editCanal').value = data.canal;
-            document.getElementById('editManejoOferta').value = data.manejoOferta;
             document.getElementById('editPresenciaEjecutivo').value = data.presenciaEjecutivo;
-            document.getElementById('editOfreciendoMarca').value = data.ofreciendoMarca;
+            document.getElementById('editManejoOferta').value = data.manejoOferta || '';
+            document.getElementById('editOfreciendoMarca').value = data.ofreciendoMarca || '';
             document.getElementById('editSupervisorConocedor').value = data.supervisorConocedor || '';
             document.getElementById('editAuditor').value = data.auditor;
-            document.getElementById('editObservaciones').value = data.observaciones;
+            document.getElementById('editObservaciones').value = data.observaciones || '';
 
             // Actualizar campos condicionales
-            const event = new Event('change');
-            document.getElementById('editPresenciaEjecutivo').dispatchEvent(event);
+            document.getElementById('editPresenciaEjecutivo').dispatchEvent(new Event('change'));
 
             // Mostrar el modal
             document.getElementById('editModal').classList.remove('hidden');
@@ -159,45 +161,55 @@ function abrirModalEdicion(id) {
         } else {
             showToast('Registro no encontrado', 'error');
         }
-    }).catch(error => {
+    } catch (error) {
         console.error("Error al obtener el documento: ", error);
         showToast('Error al cargar los datos', 'error');
-    });
-}
+    }
+};
 
-// Esta funcion guarda los cambios editados
-function handleEditSubmit(event) {
+// Función para guardar cambios editados
+window.handleEditSubmit = async function (event) {
     event.preventDefault();
     const recordId = document.getElementById('editRecordId').value;
     const form = event.target;
 
-    const data = {
-        nombre: form.editNombre.value.trim(),
-        fecha: form.editFecha.value,
-        sucursal: form.editSucursal.value,
-        canal: form.editCanal.value,
-        manejoOferta: form.editManejoOferta.value,
-        presenciaEjecutivo: form.editPresenciaEjecutivo.value,
-        ofreciendoMarca: form.editOfreciendoMarca.value,
-        supervisorConocedor: form.editSupervisorConocedor.value || '',
-        auditor: form.editAuditor.value,
-        observaciones: form.editObservaciones.value.trim(),
-        updatedAt: firebase.firestore.Timestamp.now()
-    };
+    try {
+        const docRef = doc(db, 'evaluaciones', recordId);
 
-    evaluacionesRef.doc(recordId).update(data)
-        .then(() => {
-            showToast('¡Actualizado!', 'success');
-            document.getElementById('editModal').classList.add('hidden');
-            cargarYMostrarDatos();
-        })
-        .catch(error => {
-            showToast('Error: ' + error.message, 'error');
-        });
-}
+        const data = {
+            nombre: form.editNombre.value.trim(),
+            fecha: form.editFecha.value,
+            sucursal: form.editSucursal.value,
+            canal: form.editCanal.value,
+            presenciaEjecutivo: form.editPresenciaEjecutivo.value,
+            auditor: form.editAuditor.value,
+            observaciones: form.editObservaciones.value.trim(),
+            updatedAt: serverTimestamp()
+        };
 
-//Funcion PARA GUARDAR DATOS EN BASE
-form.addEventListener('submit', e => {
+        // Añadir campos condicionales según la presencia del ejecutivo
+        if (form.editPresenciaEjecutivo.value === 'Sí') {
+            data.manejoOferta = form.editManejoOferta.value;
+            data.ofreciendoMarca = form.editOfreciendoMarca.value;
+            data.supervisorConocedor = '';
+        } else {
+            data.manejoOferta = '';
+            data.ofreciendoMarca = '';
+            data.supervisorConocedor = form.editSupervisorConocedor.value;
+        }
+
+        await updateDoc(docRef, data);
+        showToast('¡Registro actualizado correctamente!', 'success');
+        document.getElementById('editModal').classList.add('hidden');
+        cargarYMostrarDatos();
+    } catch (error) {
+        console.error("Error al actualizar: ", error);
+        showToast('Error: ' + error.message, 'error');
+    }
+};
+
+// Función para guardar datos en la base
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const data = {
@@ -205,85 +217,110 @@ form.addEventListener('submit', e => {
         fecha: form.fecha.value,
         sucursal: form.sucursal.value,
         canal: form.canal.value,
-        manejoOferta: form.manejoOferta.value,
         presenciaEjecutivo: form.presenciaEjecutivo.value,
-        ofreciendoMarca: form.ofreciendoMarca.value,
-        supervisorConocedor: form.supervisorConocedor.value || '',
         auditor: form.auditor.value,
         observaciones: form.observaciones.value.trim(),
-        createdAt: firebase.firestore.Timestamp.now()
+        createdAt: serverTimestamp()
     };
 
-  
-        // Guardar un nuevo registro
-        evaluacionesRef.add(data)
-            .then(() => {
-                showToast('Evaluación guardada exitosamente!', 'success');
-                form.reset();
-                cargarYMostrarDatos();
-            })
-            .catch(error => {
-                console.error("Error al guardar la evaluación: ", error);
-                showToast('Error al guardar la evaluación. Inténtalo de nuevo.', 'error');
-            });
-    
+    // Añadir campos condicionales según la presencia del ejecutivo
+    if (form.presenciaEjecutivo.value === 'Sí') {
+        data.manejoOferta = form.manejoOferta.value;
+        data.ofreciendoMarca = form.ofreciendoMarca.value;
+        data.supervisorConocedor = '';
+    } else {
+        data.manejoOferta = '';
+        data.ofreciendoMarca = '';
+        data.supervisorConocedor = form.supervisorConocedor.value;
+    }
+
+    try {
+        await addDoc(evaluacionesRef, data);
+        showToast('Evaluación guardada exitosamente!', 'success');
+        form.reset();
+        // Establecer la fecha actual después de resetear el formulario
+        document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+        cargarYMostrarDatos();
+    } catch (error) {
+        console.error("Error al guardar la evaluación: ", error);
+        showToast('Error al guardar la evaluación. Inténtalo de nuevo.', 'error');
+    }
 });
 
-
 // Función para cargar datos desde Firebase con filtros
-function cargarYMostrarDatos() {
+async function cargarYMostrarDatos() {
     const fechaDesde = document.getElementById('filterFechaDesde').value;
     const fechaHasta = document.getElementById('filterFechaHasta').value;
     const sucursalFiltro = document.getElementById('filterSucursal').value;
     const canalFiltro = document.getElementById('filterCanal').value;
     const nombreFiltro = document.getElementById('filterNombre').value.trim().toLowerCase();
 
-    // Construir la consulta base
-    let query = evaluacionesRef;
+    try {
+        // Construir la consulta base
+        let q = collection(db, 'evaluaciones');
+        let constraints = [];
 
-    // Aplicar filtros de fecha
-    if (fechaDesde && fechaHasta) {
-        query = query.where('fecha', '>=', fechaDesde).where('fecha', '<=', fechaHasta);
-    } else if (fechaDesde) {
-        query = query.where('fecha', '>=', fechaDesde);
-    } else if (fechaHasta) {
-        query = query.where('fecha', '<=', fechaHasta);
-    }
+        // Crear un array de condiciones para la consulta
+        if (sucursalFiltro !== 'all') {
+            constraints.push(where('sucursal', '==', sucursalFiltro));
+        }
 
-    // Aplicar filtro de sucursal
-    if (sucursalFiltro !== 'all') {
-        query = query.where('sucursal', '==', sucursalFiltro);
-    }
+        if (canalFiltro !== 'all') {
+            constraints.push(where('canal', '==', canalFiltro));
+        }
 
-    // Aplicar filtro de canal
-    if (canalFiltro !== 'all') {
-        query = query.where('canal', '==', canalFiltro);
-    }
+        // Firebase no permite múltiples condiciones sobre diferentes campos
+        // así que hacemos una consulta simple y filtramos los demás en memoria
+        if (constraints.length > 0) {
+            // Usamos solo la primera restricción para la consulta
+            q = query(q, constraints[0]);
+        }
 
-    // Ejecutar la consulta
-    query.get()
-        .then(snapshot => {
-            let docs = [];
-            snapshot.forEach(doc => {
-                // Agregar los datos del documento con su ID
-                docs.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
-            });
+        const querySnapshot = await getDocs(q);
+        let docs = [];
 
-            // Aplicar filtro de nombre (debe hacerse en memoria porque Firestore no soporta búsqueda parcial)
-            if (nombreFiltro.length > 0) {
-                docs = docs.filter(d => d.nombre.toLowerCase().includes(nombreFiltro));
+        querySnapshot.forEach((doc) => {
+            // Añadir documento a la lista si cumple con todas las restricciones
+            const data = doc.data();
+            let incluir = true;
+
+            // Comprobar restricciones de fecha
+            if (fechaDesde && data.fecha < fechaDesde) incluir = false;
+            if (fechaHasta && data.fecha > fechaHasta) incluir = false;
+
+            // Comprobar las restricciones adicionales que no pudimos aplicar en la consulta
+            if (constraints.length > 1) {
+                // Omitimos la primera restricción porque ya la usamos en la consulta
+                for (let i = 1; i < constraints.length; i++) {
+                    const constraint = constraints[i];
+                    if (constraint.type === 'where') {
+                        if (data[constraint.field] !== constraint.value) {
+                            incluir = false;
+                            break;
+                        }
+                    }
+                }
             }
 
-            mostrarGraficas(docs);
-            mostrarTabla(docs);
-        })
-        .catch(error => {
-            console.error("Error al obtener las evaluaciones:", error);
-            showToast('Error al cargar los datos. Inténtalo de nuevo.', 'error');
+            // Comprobar filtro por nombre
+            if (nombreFiltro && !data.nombre.toLowerCase().includes(nombreFiltro)) {
+                incluir = false;
+            }
+
+            if (incluir) {
+                docs.push({
+                    id: doc.id,
+                    ...data
+                });
+            }
         });
+
+        mostrarGraficas(docs);
+        mostrarTabla(docs);
+    } catch (error) {
+        console.error("Error al obtener las evaluaciones:", error);
+        showToast('Error al cargar los datos. Inténtalo de nuevo.', 'error');
+    }
 }
 
 // Mostrar gráfica con Chart.js
@@ -399,22 +436,51 @@ function mostrarGraficas(docs) {
     });
 }
 
+// Función para mostrar datos en la tabla
+// Agregar variables globales para la paginación
+let currentPage = 1;
+let rowsPerPage = 10;
+let totalPages = 1;
+let currentData = [];
 
-// ================================= FUNCION PARA MOSTARLO LOS DATOS EN LA TABLA ===============
+// Modificar la función mostrarTabla para incluir paginación
 function mostrarTabla(docs) {
+    // Guardar los datos para uso en la paginación
+    currentData = docs;
+
+    // Calcular el número total de páginas
+    totalPages = Math.ceil(docs.length / rowsPerPage);
+
+    // Asegurarse que la página actual es válida
+    if (currentPage > totalPages) {
+        currentPage = totalPages || 1;
+    }
+
     const tbody = document.querySelector('#tablaEvaluaciones tbody');
     tbody.innerHTML = '';
+
+    // Si no hay registros
     if (docs.length === 0) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 10; // Ajustado para incluir todas las columnas
+        td.colSpan = 11;
         td.classList.add('px-6', 'py-4', 'text-center', 'text-sm', 'text-gray-500');
         td.textContent = 'No hay registros que mostrar.';
         tr.appendChild(td);
         tbody.appendChild(tr);
+
+        // Ocultar paginador
+        document.getElementById('tablePagination').classList.add('hidden');
         return;
     }
-    docs.forEach(d => {
+
+    // Calcular índices para la página actual
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = Math.min(startIndex + rowsPerPage, docs.length);
+
+    // Mostrar solo los registros de la página actual
+    for (let i = startIndex; i < endIndex; i++) {
+        const d = docs[i];
         const tr = document.createElement('tr');
         tr.classList.add('hover:bg-gray-50');
         tr.innerHTML = `
@@ -422,22 +488,145 @@ function mostrarTabla(docs) {
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta || '')}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.supervisorConocedor)}</td>
-            <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca || '')}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.supervisorConocedor || '')}</td>
+            <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones || '')}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.auditor)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-            <button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="abrirModalEdicion('${d.id}')">Editar</button>
+                <button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="abrirModalEdicion('${d.id}')">Editar</button>
             </td>
         `;
         tbody.appendChild(tr);
-    });
+    }
+
+    // Mostrar y actualizar paginador
+    actualizarPaginador();
 }
 
+// Función para actualizar la interfaz del paginador
+function actualizarPaginador() {
+    const paginationContainer = document.getElementById('tablePagination');
+    const paginationInfo = document.getElementById('paginationInfo');
+    const paginationControls = document.getElementById('paginationControls');
 
+    // Mostrar paginador
+    paginationContainer.classList.remove('hidden');
 
+    // Actualizar información de paginación
+    paginationInfo.textContent = `Mostrando ${currentData.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} - ${Math.min(currentPage * rowsPerPage, currentData.length)} de ${currentData.length} registros`;
+
+    // Actualizar controles de paginación
+    paginationControls.innerHTML = '';
+
+    // Botón Anterior
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+    </svg>`;
+    prevButton.className = `px-2 py-1 rounded-md ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-primary-600 hover:bg-primary-50'}`;
+    prevButton.disabled = currentPage === 1;
+    prevButton.onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            mostrarTabla(currentData);
+        }
+    };
+    paginationControls.appendChild(prevButton);
+
+    // Generar botones de página
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    // Ajustar si estamos cerca del final
+    if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // Primera página siempre visible
+    if (startPage > 1) {
+        const firstButton = createPageButton(1);
+        paginationControls.appendChild(firstButton);
+
+        if (startPage > 2) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'px-3 py-1 text-gray-500';
+            paginationControls.appendChild(ellipsis);
+        }
+    }
+
+    // Páginas numeradas
+    for (let i = startPage; i <= endPage; i++) {
+        const pageButton = createPageButton(i);
+        paginationControls.appendChild(pageButton);
+    }
+
+    // Última página siempre visible
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'px-3 py-1 text-gray-500';
+            paginationControls.appendChild(ellipsis);
+        }
+
+        const lastButton = createPageButton(totalPages);
+        paginationControls.appendChild(lastButton);
+    }
+
+    // Botón Siguiente
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+    </svg>`;
+    nextButton.className = `px-2 py-1 rounded-md ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-primary-600 hover:bg-primary-50'}`;
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            mostrarTabla(currentData);
+        }
+    };
+    paginationControls.appendChild(nextButton);
+
+    // Control de filas por página
+    actualizarSelectorRegistrosPorPagina();
+}
+
+// Función para crear botones de página numerados
+function createPageButton(pageNum) {
+    const button = document.createElement('button');
+    button.textContent = pageNum;
+    button.className = pageNum === currentPage
+        ? 'px-3 py-1 rounded-md bg-primary-600 text-white'
+        : 'px-3 py-1 rounded-md text-primary-600 hover:bg-primary-50';
+    button.onclick = () => {
+        currentPage = pageNum;
+        mostrarTabla(currentData);
+    };
+    return button;
+}
+
+// Función para actualizar el selector de registros por página
+function actualizarSelectorRegistrosPorPagina() {
+    const selector = document.getElementById('rowsPerPageSelector');
+    if (selector) {
+        selector.value = rowsPerPage;
+    }
+}
+
+// Cambiar número de registros por página
+function cambiarRegistrosPorPagina(newValue) {
+    rowsPerPage = parseInt(newValue);
+    currentPage = 1; // Reiniciar a la primera página
+    mostrarTabla(currentData);
+}
+
+// Añadir el control de registros por página y el cambio de página a las funciones globales
+window.cambiarRegistrosPorPagina = cambiarRegistrosPorPagina;
 // Escape HTML para evitar XSS en la tabla
 function escapeHtml(text) {
     if (!text) return '';
@@ -452,15 +641,13 @@ function escapeHtml(text) {
     });
 }
 
-// ESTO ES PARA LOS FILTROS
+// Manejo de filtros
 document.getElementById('btnFiltrar').addEventListener('click', e => {
     e.preventDefault();
     cargarYMostrarDatos();
 });
 
-// ESTO ES PARA LIMPIAR LOS FILTROS
-
-
+// Limpieza de filtros
 document.getElementById('btnLimpiar').addEventListener('click', e => {
     e.preventDefault();
     document.getElementById('filterFechaDesde').value = '';
@@ -471,7 +658,7 @@ document.getElementById('btnLimpiar').addEventListener('click', e => {
     cargarYMostrarDatos();
 });
 
-// ESTO ES PARA MOSTRAR LOS MENSAJES
+// Mostrar mensajes toast
 function showToast(message, type) {
     const toast = document.createElement('div');
     toast.className = `p-4 mb-4 text-sm text-white rounded-lg shadow-md ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
