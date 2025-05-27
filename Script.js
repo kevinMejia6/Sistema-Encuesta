@@ -498,7 +498,12 @@ function mostrarTabla(docs) {
             <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones || '')}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.auditor)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                <button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="abrirModalEdicion('${d.id}')">Editar</button>
+                <button  onclick="abrirModalEdicion('${d.id}')" class="inline-flex items-center px-3 py-1 border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-xs font-medium rounded-md transition-all duration-200" onclick="abrirModalEdicion('4')">
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Editar
+                </button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -630,27 +635,27 @@ function cambiarRegistrosPorPagina(newValue) {
 
 // Añadir el control de registros por página y el cambio de página a las funciones globales
 window.cambiarRegistrosPorPagina = cambiarRegistrosPorPagina;
-    // Escape HTML para evitar XSS en la tabla
-    function escapeHtml(text) {
-        // Verificar si el texto es null, undefined o no es string
-        if (text == null || text === undefined) {
-            return '';
-        }
-        
-        // Convertir a string si no lo es
-        const str = String(text);
-        
-        // Aplicar el escape de caracteres HTML
-        return str.replace(/[&<>"']/g, function (m) {
-            return ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            })[m];
-        });
+// Escape HTML para evitar XSS en la tabla
+function escapeHtml(text) {
+    // Verificar si el texto es null, undefined o no es string
+    if (text == null || text === undefined) {
+        return '';
     }
+
+    // Convertir a string si no lo es
+    const str = String(text);
+
+    // Aplicar el escape de caracteres HTML
+    return str.replace(/[&<>"']/g, function (m) {
+        return ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[m];
+    });
+}
 
 // Manejo de filtros
 document.getElementById('btnFiltrar').addEventListener('click', e => {
@@ -690,3 +695,235 @@ window.onload = () => {
     document.getElementById('fecha').value = today;
     cargarYMostrarDatos();
 };
+
+
+// Función para obtener los datos filtrados de la tabla
+function obtenerDatosTabla() {
+    // Asume que tienes un array global con los datos llamado 'evaluaciones' o similar
+    // Si no lo tienes, tendrás que extraer los datos de la tabla HTML
+
+    const tabla = document.getElementById('tablaEvaluaciones');
+    const filas = tabla.querySelectorAll('tbody tr');
+    const datos = [];
+
+    filas.forEach(fila => {
+        const celdas = fila.querySelectorAll('td');
+        if (celdas.length > 0) {
+            datos.push({
+                nombre: celdas[0]?.textContent || '',
+                fecha: celdas[1]?.textContent || '',
+                sucursal: celdas[2]?.textContent || '',
+                canal: celdas[3]?.textContent || '',
+                manejoOferta: celdas[4]?.textContent || '',
+                presenciaEjecutivo: celdas[5]?.textContent || '',
+                ofreciendoMarca: celdas[6]?.textContent || '',
+                supervisorConocedor: celdas[7]?.textContent || '',
+                observaciones: celdas[8]?.textContent || '',
+                auditor: celdas[9]?.textContent || ''
+            });
+        }
+    });
+
+    return datos;
+}
+
+// Función para descargar en PDF
+function descargarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4'); // Orientación landscape
+
+    const datos = obtenerDatosTabla();
+
+    // Título del documento
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('Evaluación de Ejecutivos de Ventas', 15, 15);
+
+    // Fecha de generación
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Generado el: ${new Date().toLocaleDateString('es-ES')}`, 15, 25);
+
+    // Preparar datos para la tabla
+    const encabezados = [
+        'Nombre', 'Fecha', 'Sucursal', 'Canal', 'Manejo Oferta',
+        'Presencia', 'Ofreciendo Marca', 'Supervisor', 'Observaciones', 'Auditor'
+    ];
+
+    const filasDatos = datos.map(item => [
+        item.nombre,
+        item.fecha,
+        item.sucursal,
+        item.canal,
+        item.manejoOferta,
+        item.presenciaEjecutivo,
+        item.ofreciendoMarca,
+        item.supervisorConocedor,
+        item.observaciones.length > 50 ? item.observaciones.substring(0, 50) + '...' : item.observaciones,
+        item.auditor
+    ]);
+
+    // Crear tabla
+    doc.autoTable({
+        head: [encabezados],
+        body: filasDatos,
+        startY: 35,
+        styles: {
+            fontSize: 8,
+            cellPadding: 2
+        },
+        headStyles: {
+            fillColor: [59, 130, 246], // Color azul
+            textColor: 255
+        },
+        columnStyles: {
+            8: { cellWidth: 40 } // Columna de observaciones más ancha
+        },
+        margin: { top: 35, right: 15, bottom: 20, left: 15 }
+    });
+
+    // Descargar el archivo
+    doc.save(`evaluaciones_ejecutivos_${new Date().toISOString().split('T')[0]}.pdf`);
+
+    mostrarToast('PDF descargado exitosamente', 'success');
+}
+
+// Función para descargar en Excel
+function descargarExcel() {
+    const datos = obtenerDatosTabla();
+
+    // Crear un nuevo libro de trabajo
+    const wb = XLSX.utils.book_new();
+
+    // Convertir datos a formato de hoja de cálculo
+    const ws = XLSX.utils.json_to_sheet(datos.map(item => ({
+        'Nombre': item.nombre,
+        'Fecha': item.fecha,
+        'Sucursal': item.sucursal,
+        'Canal': item.canal,
+        'Manejo de Oferta': item.manejoOferta,
+        'Presencia Ejecutivo': item.presenciaEjecutivo,
+        'Ofreciendo Marca': item.ofreciendoMarca,
+        'Supervisor Conocedor': item.supervisorConocedor,
+        'Observaciones': item.observaciones,
+        'Auditor': item.auditor
+    })));
+
+    // Agregar la hoja al libro
+    XLSX.utils.book_append_sheet(wb, ws, 'Evaluaciones');
+
+    // Descargar el archivo
+    XLSX.writeFile(wb, `evaluaciones_ejecutivos_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+    mostrarToast('Excel descargado exitosamente', 'success');
+}
+
+// Función para descargar en CSV
+function descargarCSV() {
+    const datos = obtenerDatosTabla();
+
+    // Crear encabezados CSV
+    const encabezados = [
+        'Nombre', 'Fecha', 'Sucursal', 'Canal', 'Manejo de Oferta',
+        'Presencia Ejecutivo', 'Ofreciendo Marca', 'Supervisor Conocedor',
+        'Observaciones', 'Auditor'
+    ];
+
+    // Convertir datos a formato CSV
+    let csvContent = encabezados.join(',') + '\n';
+
+    datos.forEach(item => {
+        const fila = [
+            `"${item.nombre}"`,
+            `"${item.fecha}"`,
+            `"${item.sucursal}"`,
+            `"${item.canal}"`,
+            `"${item.manejoOferta}"`,
+            `"${item.presenciaEjecutivo}"`,
+            `"${item.ofreciendoMarca}"`,
+            `"${item.supervisorConocedor}"`,
+            `"${item.observaciones.replace(/"/g, '""')}"`, // Escapar comillas dobles
+            `"${item.auditor}"`
+        ];
+        csvContent += fila.join(',') + '\n';
+    });
+
+    // Crear y descargar el archivo
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `evaluaciones_ejecutivos_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    mostrarToast('CSV descargado exitosamente', 'success');
+}
+
+// Función para mostrar toast (notificación)
+function mostrarToast(mensaje, tipo = 'info') {
+    const toastContainer = document.getElementById('toastContainer') || crearToastContainer();
+
+    const toast = document.createElement('div');
+    toast.className = `max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg transform transition-all duration-300 ease-in-out translate-x-full opacity-0`;
+
+    const colorClass = tipo === 'success' ? 'text-green-600' : 'text-blue-600';
+
+    toast.innerHTML = `
+                <div class="flex p-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-4 w-4 ${colorClass} mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-gray-700">${mensaje}</p>
+                    </div>
+                </div>
+            `;
+
+    toastContainer.appendChild(toast);
+
+    // Mostrar el toast
+    setTimeout(() => {
+        toast.classList.remove('translate-x-full', 'opacity-0');
+    }, 100);
+
+    // Ocultar y remover el toast después de 3 segundos
+    setTimeout(() => {
+        toast.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Crear contenedor de toast si no existe
+function crearToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'fixed top-0 right-0 p-6 space-y-4 z-50';
+    document.body.appendChild(container);
+    return container;
+}
+
+// Event listeners para los botones
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('btnDownloadPDF')?.addEventListener('click', descargarPDF);
+    document.getElementById('btnDownloadExcel')?.addEventListener('click', descargarExcel);
+    document.getElementById('btnDownloadCSV')?.addEventListener('click', descargarCSV);
+});
+
+// ACTUALIZAR FECHA DEL FOOTER DINAMICAMENTE
+document.addEventListener("DOMContentLoaded", () => {
+    const yearElement = document.getElementById("year");
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+    } else {
+        console.warn("Elemento con ID 'year' no encontrado.");
+    }
+});
