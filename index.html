@@ -9,13 +9,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script> -->
+
 
 </head>
 
 <body class="bg-slate-50 text-gray-800 min-h-screen">
-  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+  <div class="max-w-8xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     <!-- Header -->
     <header class="mb-10">
       <h1 class="text-3xl font-bold text-center text-primary-700 sm:text-4xl">
@@ -149,15 +148,21 @@
           </select>
         </div>
 
+        
         <div class="mt-8">
-          <button type="submit" aria-label="Enviar Evaluación"
-            class="w-full bg-primary-600 px-4 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out">
-            Enviar Evaluación
+          <button type="submit" id="submitBtn" aria-label="Enviar Evaluación"
+            class="w-full bg-primary-600 px-4 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
+            <span id="submitBtnText">Enviar Evaluación</span>
+            <div id="submitBtnLoading" class="hidden flex items-center justify-center">
+              <div class="loading-spinner mr-2"></div>
+              Enviando...
+            </div>
           </button>
         </div>
       </form>
     </div>
 
+    <!-- Filters -->
     <!-- Filters -->
     <div class="bg-white rounded-xl shadow-card mb-10">
       <div class="px-6 py-5 border-b border-gray-200">
@@ -213,8 +218,16 @@
         </div>
         <div class="flex flex-wrap gap-4 mt-6">
           <button id="btnFiltrar" aria-label="Aplicar filtros" type="button"
-            class="flex-1 sm:flex-none bg-primary-600 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out">
-            Aplicar filtros
+            class="flex-1 sm:flex-none bg-primary-600 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
+            <span id="filterBtnText">Aplicar filtros</span>
+            <div id="filterBtnLoading" class="hidden flex items-center justify-center">
+              <div class="loading-dots mr-2">
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+              Filtrando...
+            </div>
           </button>
           <button id="btnLimpiar" aria-label="Limpiar filtros" type="button"
             class="flex-1 sm:flex-none bg-gray-500 px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
@@ -223,12 +236,54 @@
         </div>
       </div>
     </div>
-
+    
     <!-- Data Table -->
     <div class="bg-white rounded-xl shadow-card mb-10 overflow-hidden">
-      <div class="px-6 py-5 border-b border-gray-200">
+      <div
+        class="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 class="text-xl font-semibold text-gray-800">Registros de Evaluaciones</h2>
+        <div class="flex flex-wrap gap-2">
+          <button id="btnDownloadPDF"
+            class="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm font-medium shadow-sm hover:shadow-md">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                clip-rule="evenodd"></path>
+            </svg>
+            PDF
+          </button>
+          <button id="btnDownloadExcel"
+            class="flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium shadow-sm hover:shadow-md">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                clip-rule="evenodd"></path>
+            </svg>
+            Excel
+          </button>
+          <button id="btnDownloadCSV"
+            class="flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium shadow-sm hover:shadow-md">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                clip-rule="evenodd"></path>
+            </svg>
+            CSV
+          </button>
+        </div>
       </div>
+
+       <!-- Loading Overlay para la tabla -->
+      <div id="tableLoadingOverlay" class="hidden relative">
+        <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+          <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-600 font-medium">Cargando registros...</p>
+          </div>
+        </div>
+      </div>
+
+
       <div class="overflow-x-auto">
         <table aria-label="Tabla con registros de evaluaciones" id="tablaEvaluaciones" role="grid"
           class="min-w-full divide-y divide-gray-200">
@@ -250,6 +305,16 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <!-- Aquí se cargan los registros dinámicamente -->
+             <!-- Loading skeleton inicial -->
+            <tr id="initialLoadingRow">
+              <td colspan="11" class="px-6 py-12 text-center">
+                <div class="flex flex-col items-center justify-center">
+                  <div class="loading-spinner mb-4"></div>
+                  <p class="text-gray-500 font-medium">Cargando datos iniciales...</p>
+                  <p class="text-gray-400 text-sm mt-1">Por favor espere un momento</p>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
 
@@ -297,7 +362,6 @@
 
 
 
-    <!-- Modal de Edición -->
     <!-- Modal de Edición -->
     <div id="editModal"
       class="fixed inset-0 bg-black/30 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 transition-opacity duration-300 pt-2 pb-4">
@@ -464,111 +528,17 @@
       </div>
     </div>
 
-    <style>
-      @keyframes slide-down {
-        from {
-          transform: translateY(-20px);
-          opacity: 0;
-        }
-
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      .animate-slide-down {
-        animation: slide-down 0.3s ease-out;
-      }
-
-      select {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M15.3 9.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.4l3.3 3.29 3.3-3.3z'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 1.5em;
-      }
-
-      /* Media query for smaller screens */
-      @media (max-width: 640px) {
-        .fixed.inset-0 {
-          padding: 0 8px;
-        }
-
-        /* Ajustes para móviles */
-        #editModal {
-          display: block;
-          padding-top: 0.5rem;
-          padding-bottom: 1.5rem;
-        }
-
-        /* Altura máxima para formulario en móvil */
-        form {
-          padding-bottom: 2rem;
-        }
-      }
-
-      /* Mostrar el modal correctamente - solo cuando sea visible */
-      #editModal:not(.hidden) {
-        display: block;
-      }
-
-      /* Asegurar que el modal esté oculto por defecto */
-      #editModal.hidden {
-        display: none !important;
-      }
-    </style>
-
-    <!-- Script para manejar el modal -->
-    <script>
-      // Función para cerrar el modal
-      function closeEditModal() {
-        const modal = document.getElementById('editModal');
-        if (modal) {
-          modal.classList.add('hidden');
-          document.body.style.overflow = 'auto'; // Restaurar scroll del body
-        }
-      }
-
-      // Función para abrir el modal
-      function openEditModal() {
-        const modal = document.getElementById('editModal');
-        if (modal) {
-          modal.classList.remove('hidden');
-          document.body.style.overflow = 'hidden'; // Prevenir scroll del body
-        }
-      }
-
-      // Asegurar que el modal está oculto al cargar la página
-      document.addEventListener('DOMContentLoaded', function () {
-        const modal = document.getElementById('editModal');
-        if (modal) {
-          modal.classList.add('hidden');
-        }
-
-        // Configurar los eventos de los botones
-        const closeButtons = document.querySelectorAll('#closeModal, #cancelEditBtn');
-        closeButtons.forEach(button => {
-          button.addEventListener('click', closeEditModal);
-        });
-      });
-
-      // Manejar el envío del formulario
-      function handleEditSubmit(event) {
-        event.preventDefault();
-        // Aquí va tu código para procesar el formulario
-
-        // Cerrar el modal después de enviar
-        closeEditModal();
-      }
-    </script>
 
     <!-- Footer -->
-    <footer class="text-center text-gray-500 text-sm py-8">
-      &copy; 2024 Evaluación de Ejecutivos de Ventas
+    <footer class="bg-gray-800 text-white py-4 mt-10">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center">
+        <p class="text-sm">© <span id="year"></span> Todos los derechos reservados.</p>
+
+        <p class="text-sm mt-2 md:mt-0">Desarrollado por <strong>KLEM</strong></p>
+      </div>
     </footer>
+
   </div>
-
-
 
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed top-0 right-0 p-6 space-y-4 z-50"></div>
@@ -576,6 +546,10 @@
   <script type="module" src="firebase-config.js"></script>
 
   <script type="module" src="Script.js"></script>
+  <!-- Librerías para descargas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 </body>
 
