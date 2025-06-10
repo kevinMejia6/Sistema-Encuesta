@@ -440,13 +440,14 @@ function mostrarGraficas(docs) {
 }
 
 // Función para mostrar datos en la tabla
+// Función para mostrar datos en la tabla
 // Agregar variables globales para la paginación
 let currentPage = 1;
 let rowsPerPage = 10;
 let totalPages = 1;
 let currentData = [];
 
-// Modificar la función mostrarTabla para incluir paginación
+// Función corregida mostrarTabla para incluir paginación
 function mostrarTabla(docs) {
     // Guardar los datos para uso en la paginación
     currentData = docs;
@@ -455,8 +456,10 @@ function mostrarTabla(docs) {
     totalPages = Math.ceil(docs.length / rowsPerPage);
 
     // Asegurarse que la página actual es válida
-    if (currentPage > totalPages) {
-        currentPage = totalPages || 1;
+    if (currentPage > totalPages && totalPages > 0) {
+        currentPage = totalPages;
+    } else if (totalPages === 0) {
+        currentPage = 1;
     }
 
     const tbody = document.querySelector('#tablaEvaluaciones tbody');
@@ -466,21 +469,24 @@ function mostrarTabla(docs) {
     if (docs.length === 0) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 11;
+        td.colSpan = 6; // Ajusta según el número de columnas
         td.classList.add('px-6', 'py-4', 'text-center', 'text-sm', 'text-gray-500');
         td.textContent = 'No hay registros que mostrar.';
         tr.appendChild(td);
         tbody.appendChild(tr);
-
-        // Ocultar paginador
-        document.getElementById('tablePagination').classList.add('hidden');
+        
+        // Ocultar paginador si no hay datos
+        const paginationContainer = document.getElementById('tablePagination');
+        if (paginationContainer) {
+            paginationContainer.classList.add('hidden');
+        }
         return;
     }
 
-    // Calcular índices para la página actual
+    // CORRECCIÓN: Calcular índices para la página actual
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = Math.min(startIndex + rowsPerPage, docs.length);
-
+    
     // Mostrar solo los registros de la página actual
     for (let i = startIndex; i < endIndex; i++) {
         const d = docs[i];
@@ -491,19 +497,12 @@ function mostrarTabla(docs) {
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.fecha)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.sucursal)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.canal)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.manejoOferta || '')}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.presenciaEjecutivo)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.ofreciendoMarca || '')}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.supervisorConocedor || '')}</td>
-            <td class="px-6 py-4 text-sm text-gray-700">${escapeHtml(d.observaciones || '')}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${escapeHtml(d.auditor)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                <button  onclick="abrirModalEdicion('${d.id}')" class="inline-flex items-center px-3 py-1 border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-xs font-medium rounded-md transition-all duration-200" onclick="abrirModalEdicion('4')">
-                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                    Editar
-                </button>
+                <div class="flex items-center space-x-3">
+                    <button onclick="openDetailModal('${d.id}')" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200">Ver Detalles</button>
+                    <button onclick="abrirModalEdicion('${d.id}')" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-emerald-700 bg-emergald-50 border border-emerald-200 rounded-md hover:bg-emerald-100 hover:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 transition-all duration-200">Editar</button>
+                </div>
             </td>
         `;
         tbody.appendChild(tr);
@@ -519,20 +518,35 @@ function actualizarPaginador() {
     const paginationInfo = document.getElementById('paginationInfo');
     const paginationControls = document.getElementById('paginationControls');
 
+    // Verificar que los elementos existen
+    if (!paginationContainer || !paginationInfo || !paginationControls) {
+        console.error('No se encontraron los elementos del paginador');
+        return;
+    }
+
     // Mostrar paginador
     paginationContainer.classList.remove('hidden');
 
+    // Calcular información de paginación
+    const startRecord = currentData.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+    const endRecord = Math.min(currentPage * rowsPerPage, currentData.length);
+    
     // Actualizar información de paginación
-    paginationInfo.textContent = `Mostrando ${currentData.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} - ${Math.min(currentPage * rowsPerPage, currentData.length)} de ${currentData.length} registros`;
+    paginationInfo.textContent = `Mostrando ${startRecord} - ${endRecord} de ${currentData.length} registros`;
 
-    // Actualizar controles de paginación
+    // Limpiar controles de paginación
     paginationControls.innerHTML = '';
+
+    // Si solo hay una página, no mostrar controles
+    if (totalPages <= 1) {
+        return;
+    }
 
     // Botón Anterior
     const prevButton = document.createElement('button');
     prevButton.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-    </svg>`;
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+        </svg>`;
     prevButton.className = `px-2 py-1 rounded-md ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-primary-600 hover:bg-primary-50'}`;
     prevButton.disabled = currentPage === 1;
     prevButton.onclick = () => {
@@ -588,8 +602,8 @@ function actualizarPaginador() {
     // Botón Siguiente
     const nextButton = document.createElement('button');
     nextButton.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-    </svg>`;
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+        </svg>`;
     nextButton.className = `px-2 py-1 rounded-md ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-primary-600 hover:bg-primary-50'}`;
     nextButton.disabled = currentPage === totalPages;
     nextButton.onclick = () => {
@@ -635,6 +649,7 @@ function cambiarRegistrosPorPagina(newValue) {
 
 // Añadir el control de registros por página y el cambio de página a las funciones globales
 window.cambiarRegistrosPorPagina = cambiarRegistrosPorPagina;
+
 // Escape HTML para evitar XSS en la tabla
 function escapeHtml(text) {
     // Verificar si el texto es null, undefined o no es string
@@ -656,6 +671,7 @@ function escapeHtml(text) {
         })[m];
     });
 }
+
 
 // Manejo de filtros
 document.getElementById('btnFiltrar').addEventListener('click', e => {
